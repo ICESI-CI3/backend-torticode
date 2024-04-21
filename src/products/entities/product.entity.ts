@@ -5,7 +5,7 @@ export class Product {
     //@Column({primary: true, generated: true})
     @PrimaryGeneratedColumn('uuid') 
     id: number;
-    @Column('text')
+    @Column()
     name: string;
     @Column()
     description: string;
