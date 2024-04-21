@@ -19,7 +19,7 @@ import {TypeOrmModule} from '@nestjs/typeorm'
       password: 'root',
       database: 'db_unilunch',
       autoLoadEntities: true,
-      synchronize: true,
+      synchronize: true, 
     }),
     UsersModule, NewsModule, SalesModule, ProductsModule, ReportsModule, AuthModule],
   controllers: [],
