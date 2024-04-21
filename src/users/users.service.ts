@@ -27,6 +27,7 @@ export class UsersService {
     if (createUserDto instanceof CreateRestaurantDto) {
       const restaurant = this.restaurantRepository.create(createUserDto);
       restaurant.role = Role.RESTAURANT; 
+      console.log(restaurant);
       return await this.restaurantRepository.save(restaurant);
     } else if (createUserDto instanceof CreateStudentDto) {
       const student = this.studentRepository.create(createUserDto);
