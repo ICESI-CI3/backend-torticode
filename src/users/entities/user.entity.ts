@@ -1,5 +1,6 @@
 import { Role } from "src/roles/enum/role.enum";
-import { Column, DeleteDateColumn, Entity, PrimaryGeneratedColumn, Table, TableInheritance } from "typeorm";
+import { Column, DeleteDateColumn, Entity, PrimaryGeneratedColumn, Table, TableInheritance, OneToMany} from "typeorm";
+import { New } from '../../news/entities/new.entity';
 
 
 @Entity('users')
@@ -27,6 +28,9 @@ export abstract class User {
 
     @DeleteDateColumn()
     deleteAt: Date;
+
+    @OneToMany(() => New, news => news.user)
+    news: New[];
 
     constructor() {
         this.role = 'admin';

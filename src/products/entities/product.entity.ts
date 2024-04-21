@@ -1,11 +1,12 @@
-import { Column, DeleteDateColumn, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, DeleteDateColumn, Entity, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
+import { Sale } from '../../sales/entities/sale.entity';
 
 @Entity('products')
 export class Product {
     //@Column({primary: true, generated: true})
     @PrimaryGeneratedColumn() 
     id: number;
-    @Column()
+    @Column({unique :true})
     name: string;
     @Column()
     description: string;
@@ -22,6 +23,9 @@ export class Product {
 
     @DeleteDateColumn()
     deletedAt: Date;
+
+    @OneToMany(() => Sale, sale => sale.product)
+    sales: Sale[];
 
 
 }

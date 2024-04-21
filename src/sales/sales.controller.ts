@@ -18,17 +18,17 @@ export class SalesController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
+  findOne(@Param('id') id: number) {
     return this.salesService.findOne(+id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateSaleDto: UpdateSaleDto) {
+  update(@Param('id') id: number, @Body() updateSaleDto: UpdateSaleDto) {
     return this.salesService.update(+id, updateSaleDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
+  remove(@Param('id') id: number) {
     return this.salesService.remove(+id);
   }
 }

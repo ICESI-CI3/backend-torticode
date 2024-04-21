@@ -4,6 +4,7 @@ import { UpdateProductDto } from './dto/update-product.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Product } from './entities/product.entity';
 import { Repository } from 'typeorm';
+import { HttpException } from '@nestjs/common';
 
 @Injectable()
 /**
@@ -22,6 +23,16 @@ export class ProductsService {
    * @returns The created product.
    */
   async create(createProductDto: CreateProductDto) {
+    /*
+    const productFound = this.productRepository.findOne({
+      where: {
+        id: createProductDto.id
+      }
+    })
+
+    if (productFound) {
+      return new HttpException('Product already exists', 400);
+    }*/
     const product = this.productRepository.create(createProductDto); //Crea un objeto en memoria
     return await this.productRepository.save(product); //Guarda el objeto en bd
   }
