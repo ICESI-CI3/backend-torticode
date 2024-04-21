@@ -1,7 +1,7 @@
 import { Entity, Column, OneToMany, JoinColumn, ChildEntity } from 'typeorm';
 import { User } from '../../users/entities/user.entity';
 import { Sale } from 'src/sales/entities/sale.entity';
-import { New } from 'src/news/entities/news.entity';
+import { New } from 'src/news/entities/new.entity';
 
 @ChildEntity('restaurant')
 export class Restaurant extends User{
