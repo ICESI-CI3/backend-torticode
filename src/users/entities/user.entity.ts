@@ -1,15 +1,16 @@
-import { Column, DeleteDateColumn, Entity, PrimaryGeneratedColumn, OneToMany} from "typeorm";
+import { Role } from "src/roles/enum/role.enum";
+import { Column, DeleteDateColumn, Entity, PrimaryGeneratedColumn, Table, TableInheritance, OneToMany} from "typeorm";
 import { New } from '../../news/entities/new.entity';
 
 
 @Entity('users')
-export class User {
+@TableInheritance({ column: { type: 'enum', enum: Role, name: "role" } })
+export abstract class User {
    
     @PrimaryGeneratedColumn()
     id: number;
 
     @Column({unique: true})
-
     email: string;
 
     @Column({select: false})
@@ -18,7 +19,7 @@ export class User {
     @Column({default: 0})
     balance: number;
 
-    @Column({default: 'user'}) //Cambiar
+    @Column({type: 'enum', default:Role.ADMIN, enum: Role})
     role:string;
 
     @Column('timestamp', 
@@ -31,5 +32,7 @@ export class User {
     @OneToMany(() => New, news => news.user)
     news: New[];
 
-
+    constructor() {
+        this.role = 'admin';
+    }
 }
