@@ -1,6 +1,4 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { SalesModule } from './sales/sales.module';
 import { ReportsModule } from './reports/reports.module';
 import { UsersModule } from './users/users.module';
@@ -16,10 +14,15 @@ import {TypeOrmModule} from '@nestjs/typeorm'
     TypeOrmModule.forRoot({
       type: 'mysql',
       host: 'localhost',
-      port: 3306,
+      port: 3307,
+      username: 'user_unilunch',
+      password: 'root',
+      database: 'db_unilunch',
+      autoLoadEntities: true,
+      synchronize: true,
     }),
     UsersModule, NewsModule, SalesModule, ProductsModule, ReportsModule, AuthModule],
-  controllers: [AppController ],
-  providers: [AppService],
+  controllers: [],
+  providers: [],
 })
 export class AppModule {}
