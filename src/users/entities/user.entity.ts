@@ -18,7 +18,7 @@ export abstract class User {
     @Column({default: 0})
     balance: number;
 
-    @Column({type: 'enum', default: Role.STUDENT, enum: Role})
+    @Column({type: 'enum', default:Role.ADMIN, enum: Role})
     role:string;
 
     @Column('timestamp', 
@@ -28,4 +28,7 @@ export abstract class User {
     @DeleteDateColumn()
     deleteAt: Date;
 
+    constructor() {
+        this.role = 'admin';
+    }
 }

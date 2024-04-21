@@ -1,5 +1,6 @@
 import { CreateUserDto } from 'src/users/dto/create-user.dto';
-import { IsNotEmpty, IsString, IsNumber, MinLength, MaxLength, IsPhoneNumber } from 'class-validator';
+import { IsNotEmpty, IsString, IsNumber, MinLength, MaxLength, IsPhoneNumber, Equals, Length } from 'class-validator';
+import { Equal } from 'typeorm';
 
 export class CreateRestaurantDto extends CreateUserDto{
 
@@ -11,8 +12,6 @@ export class CreateRestaurantDto extends CreateUserDto{
 
   @IsNotEmpty()
   @IsNumber()
-  @MinLength(10)
-  @MaxLength(10)
   nit: number;
 
   @IsNotEmpty()

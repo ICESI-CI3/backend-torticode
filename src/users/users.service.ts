@@ -33,11 +33,14 @@ export class UsersService {
       student.role = Role.STUDENT; 
       return await this.studentRepository.save(student);
     } else {
+      console.log("entro");
       const user = this.userRepository.create(createUserDto);
-      user.role = Role.STUDENT; 
+      user.role = Role.ADMIN; 
+      console.log(user);
       return await this.userRepository.save(user);
     }
   }
+  
   async findAll() {
     return await this.userRepository.find();
   }

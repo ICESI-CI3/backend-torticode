@@ -16,8 +16,6 @@ export class CreateStudentDto extends CreateUserDto{
 
   @IsNotEmpty()
   @IsNumber()
-  @MinLength(8)
-  @MaxLength(10)
   dni: number;
 
   @IsNotEmpty()
