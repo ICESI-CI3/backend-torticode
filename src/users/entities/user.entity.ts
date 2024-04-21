@@ -19,7 +19,7 @@ export abstract class User {
     @Column({default: 0})
     balance: number;
 
-    @Column({type: 'enum', default:Role.ADMIN, enum: Role})
+    @Column({type: 'enum', default:Role.SUPERVISOR, enum: Role})
     role:string;
 
     @Column('timestamp', 
