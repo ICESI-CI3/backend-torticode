@@ -1,4 +1,5 @@
-import { Column, DeleteDateColumn, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Column, DeleteDateColumn, Entity, PrimaryGeneratedColumn, OneToMany} from "typeorm";
+import { New } from '../../news/entities/new.entity';
 
 
 @Entity('users')
@@ -26,6 +27,9 @@ export class User {
 
     @DeleteDateColumn()
     deleteAt: Date;
+
+    @OneToMany(() => New, news => news.user)
+    news: New[];
 
 
 }
