@@ -1,4 +1,4 @@
-import { IsInt, IsString, Length, IsOptional } from "class-validator";
+import { IsInt, IsString, Length, IsOptional, IsUrl } from "class-validator";
 
 export class CreateProductDto {
 
@@ -16,6 +16,7 @@ export class CreateProductDto {
     readonly stock: number;
 
     @IsOptional()
+    @IsUrl()
     readonly image: string;
 
 }

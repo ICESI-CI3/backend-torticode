@@ -3,7 +3,7 @@ import { Column, DeleteDateColumn, Entity, PrimaryGeneratedColumn } from 'typeor
 @Entity('products')
 export class Product {
     //@Column({primary: true, generated: true})
-    @PrimaryGeneratedColumn('uuid') 
+    @PrimaryGeneratedColumn() 
     id: number;
     @Column()
     name: string;

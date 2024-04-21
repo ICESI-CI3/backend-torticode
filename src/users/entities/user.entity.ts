@@ -1,27 +1,31 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Column, DeleteDateColumn, Entity, PrimaryGeneratedColumn } from "typeorm";
 
 
-@Entity()
-export class UserEntity {
+@Entity('users')
+export class User {
    
-    @PrimaryGeneratedColumn('uuid')
-    id: string;
+    @PrimaryGeneratedColumn()
+    id: number;
 
-    @Column()
+    @Column({unique: true})
+
     email: string;
 
-    @Column()
+    @Column({select: false})
     password: string;
 
-    @Column()
+    @Column({default: 0})
     balance: number;
 
-    @Column()
+    @Column({default: 'user'}) //Cambiar
     role:string;
 
     @Column('timestamp', 
             {nullable: false, default: () => 'CURRENT_TIMESTAMP'})
     createdAt: number;
+
+    @DeleteDateColumn()
+    deleteAt: Date;
 
 
 }
