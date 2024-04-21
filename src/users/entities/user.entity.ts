@@ -1,4 +1,4 @@
-import { Role } from "src/roles/role.enum";
+import { Role } from "src/roles/enum/role.enum";
 import { Column, DeleteDateColumn, Entity, PrimaryGeneratedColumn, Table, TableInheritance } from "typeorm";
 
 

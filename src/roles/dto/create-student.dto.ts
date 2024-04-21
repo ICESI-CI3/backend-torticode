@@ -1,5 +1,5 @@
 import { CreateUserDto } from 'src/users/dto/create-user.dto';
-import { IsNotEmpty, IsString, MinLength, MaxLength, IsAlphanumeric } from 'class-validator';
+import { IsNotEmpty, IsString, MinLength, MaxLength, IsAlphanumeric, IsNumber } from 'class-validator';
 
 export class CreateStudentDto extends CreateUserDto{
   @IsNotEmpty()
@@ -15,6 +15,12 @@ export class CreateStudentDto extends CreateUserDto{
   lastname: string;
 
   @IsNotEmpty()
+  @IsNumber()
+  @MinLength(8)
+  @MaxLength(10)
+  dni: number;
+
+  @IsNotEmpty()
   @IsAlphanumeric()
   @MinLength(9)
   @MaxLength(9)
@@ -25,7 +31,5 @@ export class CreateStudentDto extends CreateUserDto{
   @MinLength(2)
   @MaxLength(100)
   program: string;
-
-  role: string = 'student';
 
 }

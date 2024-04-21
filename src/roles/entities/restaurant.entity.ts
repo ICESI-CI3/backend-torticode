@@ -17,9 +17,6 @@ export class Restaurant extends User{
     @Column()
     phone:string;
 
-    @Column()
-    balance:number;
-
     //@OneToMany(() => Sale, sale=>sale.restaurant)
     //sale: Sale[];
 

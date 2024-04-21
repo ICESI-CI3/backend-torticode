@@ -2,7 +2,7 @@ import { CreateUserDto } from 'src/users/dto/create-user.dto';
 import { IsNotEmpty, IsString, IsNumber, MinLength, MaxLength, IsPhoneNumber } from 'class-validator';
 
 export class CreateRestaurantDto extends CreateUserDto{
-    
+
   @IsNotEmpty()
   @IsString()
   @MinLength(2)
@@ -24,13 +24,4 @@ export class CreateRestaurantDto extends CreateUserDto{
   @IsNotEmpty()
   @IsPhoneNumber()
   phone: string;
-
-  @IsNotEmpty()
-  @IsNumber()
-  balance: number;
-
-  // Si necesitas capturar los roles en el DTO, asegúrate de añadir validación para solo permitir "restaurant"
-  role: string = 'restaurant';
-
-  // Agrega otros campos relevantes de User si es necesario.
 }

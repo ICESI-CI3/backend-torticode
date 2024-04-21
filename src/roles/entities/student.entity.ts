@@ -8,6 +8,9 @@ export class Student extends User{
 
     @Column()
     lastname: string;
+    
+    @Column()
+    dni: number;
 
     @Column()
     code: string;
