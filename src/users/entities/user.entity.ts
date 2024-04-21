@@ -1,15 +1,15 @@
 import { Role } from "src/roles/role.enum";
-import { Column, DeleteDateColumn, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Column, DeleteDateColumn, Entity, PrimaryGeneratedColumn, Table, TableInheritance } from "typeorm";
 
 
 @Entity('users')
-export class User {
+@TableInheritance({ column: { type: 'enum', enum: Role, name: "role" } })
+export abstract class User {
    
     @PrimaryGeneratedColumn()
     id: number;
 
     @Column({unique: true})
-
     email: string;
 
     @Column({select: false})
@@ -27,6 +27,5 @@ export class User {
 
     @DeleteDateColumn()
     deleteAt: Date;
-
 
 }

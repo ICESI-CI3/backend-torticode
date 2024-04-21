@@ -1,7 +1,7 @@
-import { Entity, Column } from 'typeorm';
-import { User } from '../users/entities/user.entity';
+import { Entity, Column, ChildEntity } from 'typeorm';
+import { User } from '../../users/entities/user.entity';
 
-@Entity()
+@ChildEntity('student')
 export class Student extends User{
     @Column()
     name: string;
