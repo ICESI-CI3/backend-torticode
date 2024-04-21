@@ -5,7 +5,7 @@ export class Product {
     //@Column({primary: true, generated: true})
     @PrimaryGeneratedColumn() 
     id: number;
-    @Column()
+    @Column({unique :true})
     name: string;
     @Column()
     description: string;
