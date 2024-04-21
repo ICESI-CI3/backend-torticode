@@ -1,5 +1,5 @@
-import { Column, DeleteDateColumn, Entity, PrimaryGeneratedColumn } from 'typeorm';
-
+import { Column, DeleteDateColumn, Entity, PrimaryGeneratedColumn , ManyToOne} from 'typeorm';
+import { User } from '../../users/entities/user.entity';
 @Entity('news')
 export class New {
 
@@ -18,5 +18,8 @@ export class New {
 
     @DeleteDateColumn()
     deletedAt: Date;
+
+    @ManyToOne(() => User, user => user.news)
+    user: User;
     
 }
