@@ -7,10 +7,18 @@ import { UsersModule } from './users/users.module';
 import { ProductsModule } from './products/products.module';
 import { NewsModule } from './news/news.module';
 import { AuthModule } from './auth/auth.module';
+import {TypeOrmModule} from '@nestjs/typeorm'
+
 
 
 @Module({
-  imports: [UsersModule, NewsModule, SalesModule, ProductsModule, ReportsModule, AuthModule],
+  imports: [ 
+    TypeOrmModule.forRoot({
+      type: 'mysql',
+      host: 'localhost',
+      port: 3306,
+    }),
+    UsersModule, NewsModule, SalesModule, ProductsModule, ReportsModule, AuthModule],
   controllers: [AppController ],
   providers: [AppService],
 })
