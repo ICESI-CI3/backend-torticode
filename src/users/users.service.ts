@@ -34,10 +34,10 @@ export class UsersService {
       return await this.studentRepository.save(student);
     } else {
       console.log("entro");
-      const user = this.userRepository.create(createUserDto);
-      user.role = Role.ADMIN; 
-      console.log(user);
-      return await this.userRepository.save(user);
+      const admin = this.userRepository.create(createUserDto);
+      admin.role = Role.ADMIN; 
+      console.log(admin);
+      return await this.userRepository.save(admin);
     }
   }
   
