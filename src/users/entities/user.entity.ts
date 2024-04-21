@@ -1,3 +1,4 @@
+import { Role } from "src/roles/role.enum";
 import { Column, DeleteDateColumn, Entity, PrimaryGeneratedColumn } from "typeorm";
 
 
@@ -17,7 +18,7 @@ export class User {
     @Column({default: 0})
     balance: number;
 
-    @Column({default: 'user'}) //Cambiar
+    @Column({type: 'enum', default: Role.STUDENT, enum: Role})
     role:string;
 
     @Column('timestamp', 
