@@ -22,7 +22,7 @@ export class SalesService {
   }
 
   async findOne(id: number) {
-    return await this.saleRepository.findOneBy(id);
+    return await this.saleRepository.findOneBy({id});
   }
 
   async update(id: number, updateSaleDto: UpdateSaleDto) {
