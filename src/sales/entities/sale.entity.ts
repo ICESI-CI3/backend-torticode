@@ -1,17 +1,14 @@
-import { Column, DeleteDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
-import { Product } from '../../products/entities/product.entity';
+import { Column, DeleteDateColumn, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { User } from '../../users/entities/user.entity';
+import { SaleDetail } from 'src/sale-details/entities/sale-detail.entity';
 
 @Entity()
 export class Sale {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @ManyToOne(() => Product)
-    product: Product;
-
-    @Column()
-    quantity: number;
+    @OneToMany(() => SaleDetail, saleDetails => saleDetails.sale)
+    saleDetails: SaleDetail[];
 
     @ManyToOne(() => User)
     restaurant: User;

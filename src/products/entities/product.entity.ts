@@ -1,5 +1,6 @@
-import { Column, DeleteDateColumn, Entity, PrimaryGeneratedColumn, OneToMany, ManyToMany } from 'typeorm';
+import { Column, DeleteDateColumn, Entity, PrimaryGeneratedColumn, OneToMany, ManyToMany, ManyToOne } from 'typeorm';
 import { Sale } from '../../sales/entities/sale.entity';
+import { SaleDetail } from 'src/sale-details/entities/sale-detail.entity';
 
 @Entity('products')
 export class Product {
@@ -24,8 +25,7 @@ export class Product {
     @DeleteDateColumn()
     deletedAt: Date;
 
-    @ManyToMany(() => Sale, sale => sale.product)
-    sales: Sale[];
-
-
+    @ManyToOne(() => SaleDetail, saleDetails => saleDetails.product)
+    saleDetails: SaleDetail;
+    
 }
