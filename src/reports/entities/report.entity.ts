@@ -1,23 +1,35 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Restaurant } from 'src/roles/entities/restaurant.entity';
+import { Student } from 'src/roles/entities/student.entity';
+import { User } from 'src/users/entities/user.entity';
+import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 
-/**
- * Entidad que representa un informe de ventas en la base de datos.
- */
 @Entity()
 export class Report {
-    /** Identificador único del informe. */
+
     @PrimaryGeneratedColumn()
     id: number;
 
-    /** Título del informe. */
     @Column()
     title: string;
 
-    /** Número total de ventas incluidas en el informe. */
-    @Column({ name: 'total_sales' })
+    @CreateDateColumn()
+    fechaCreacion: Date;
+
+    @Column()
+    startPeriod: Date;
+
+    @Column()
+    endPeriod: Date; 
+   
+    @Column('decimal', { precision: 10, scale: 2 })
     totalSales: number;
 
-    /** Ganancias totales generadas por las ventas incluidas en el informe. */
-    @Column({ name: 'total_earnings' })
-    totalEarnings: number;
+    @Column('int', { name: 'total_transactions' })
+    totalTransactions: number;
+
+    @ManyToOne(() => Restaurant, restaurant => restaurant.reports)
+    restaurant: Restaurant;
+
+    @ManyToOne(() => Student, student => student.reports)
+    student: Student;
 }

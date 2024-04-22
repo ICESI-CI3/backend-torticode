@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsNumber, IsString, MaxLength } from 'class-validator';
+import { IsDateString, IsNotEmpty, IsNumber, IsString, MaxLength } from 'class-validator';
 
 export class CreateReportDto {
     /** Título del informe. */
@@ -7,13 +7,12 @@ export class CreateReportDto {
     @MaxLength(100, { message: 'El título del informe no puede tener más de 100 caracteres' })
     title: string;
 
-    /** Número total de ventas incluidas en el informe. */
-    @IsNotEmpty({ message: 'El número total de ventas es requerido' })
-    @IsNumber({}, { message: 'El número total de ventas debe ser un número' })
-    totalSales: number;
+    @IsNotEmpty({ message: 'El periodo de inicio es requerido' })
+    @IsDateString()
+    periodoInicio: string; 
 
-    /** Ganancias totales generadas por las ventas incluidas en el informe. */
-    @IsNotEmpty({ message: 'Las ganancias totales son requeridas' })
-    @IsNumber({}, { message: 'Las ganancias totales deben ser un número' })
-    totalEarnings: number;
+    @IsNotEmpty({message: 'El periodo de de finalización es requerido' })
+    @IsDateString()
+    periodoFin: string; 
+
 }

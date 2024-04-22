@@ -8,8 +8,6 @@ import { AuthModule } from './auth/auth.module';
 import {TypeOrmModule} from '@nestjs/typeorm'
 import { SaleDetailsModule } from './sale-details/sale-details.module';
 
-
-
 @Module({
   imports: [ 
     TypeOrmModule.forRoot({

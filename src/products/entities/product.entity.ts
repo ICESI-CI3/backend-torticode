@@ -1,6 +1,7 @@
 import { Column, DeleteDateColumn, Entity, PrimaryGeneratedColumn, OneToMany, ManyToMany, ManyToOne } from 'typeorm';
 import { Sale } from '../../sales/entities/sale.entity';
 import { SaleDetail } from 'src/sale-details/entities/sale-detail.entity';
+import { Restaurant } from 'src/roles/entities/restaurant.entity';
 
 @Entity('products')
 export class Product {
@@ -27,5 +28,8 @@ export class Product {
 
     @ManyToOne(() => SaleDetail, saleDetails => saleDetails.product)
     saleDetails: SaleDetail;
-    
+
+    @ManyToOne(() => Restaurant, restaurant=>restaurant.products)
+    restaurant: Restaurant;
+
 }
