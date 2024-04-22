@@ -5,6 +5,9 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { CreateRestaurantDto } from 'src/roles/dto/create-restaurant.dto';
 import { CreateStudentDto } from 'src/roles/dto/create-student.dto'; 
 import { CreateSupervisorDto } from 'src/roles/dto/create-supervisor.dto';
+import { UpdateStudentDto } from 'src/roles/dto/update-student.dto';
+import { UpdateRestaurantDto } from 'src/roles/dto/update-restaurant.dto';
+import { UpdateSupervisorDto } from 'src/roles/dto/update-supervisor.dto';
 
 @Controller('users')
 export class UsersController {
@@ -36,8 +39,18 @@ export class UsersController {
     return this.usersService.findOne(id);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: number, @Body() updateUserDto: UpdateUserDto) {
+  @Patch('student/:id')
+  updateStudent(@Param('id') id: number, @Body() updateUserDto: UpdateStudentDto) {
+    return this.usersService.update(id, updateUserDto);
+  }
+
+  @Patch('restaurant/:id')
+  updateRestaurante(@Param('id') id: number, @Body() updateUserDto: UpdateRestaurantDto) {
+    return this.usersService.update(id, updateUserDto);
+  }
+
+  @Patch('supervisor/:id')
+  updateSupervisor(@Param('id') id: number, @Body() updateUserDto: UpdateSupervisorDto) {
     return this.usersService.update(id, updateUserDto);
   }
 
