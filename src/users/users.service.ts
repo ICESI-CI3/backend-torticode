@@ -29,7 +29,7 @@ export class UsersService {
   ) {}
 
   
-  async create(createUserDto: CreateUserDto | CreateRestaurantDto | CreateStudentDto): Promise<User> {
+  async create(createUserDto: CreateSupervisorDto | CreateRestaurantDto | CreateStudentDto): Promise<User> {
     if (createUserDto instanceof CreateRestaurantDto) {
       const restaurant = this.restaurantRepository.create(createUserDto);
       restaurant.role = Role.RESTAURANT; 
@@ -62,5 +62,9 @@ export class UsersService {
 
   async remove(id: number) {
     return await this.userRepository.softDelete(id);
+  }
+
+  async findByRole(role: Role): Promise<User[]> {
+    return await this.userRepository.find({ where: { role } });
   }
 }
