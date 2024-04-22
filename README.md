@@ -1,6 +1,6 @@
-# UniLuch 🍱💻
+# UniLunch 🍱💻
 
-UniLuch es una plataforma diseñada para facilitar el proceso de venta de almuerzos a estudiantes y restaurantes dentro de la universidad. Con módulos que abarcan desde la generación de reportes hasta la gestión de usuarios y productos, UniLuch proporciona herramientas completas para optimizar las operaciones comerciales en el campus.
+UniLunch es una plataforma diseñada para facilitar el proceso de venta de almuerzos a estudiantes y restaurantes dentro de la universidad. Con módulos que abarcan desde la generación de reportes hasta la gestión de usuarios y productos, UniLuch proporciona herramientas completas para optimizar las operaciones comerciales en el campus.
 
 ## Integrantes del Equipo 👩‍💻👨‍💻
 
