@@ -6,6 +6,7 @@ import { ProductsModule } from './products/products.module';
 import { NewsModule } from './news/news.module';
 import { AuthModule } from './auth/auth.module';
 import {TypeOrmModule} from '@nestjs/typeorm'
+import { SaleDetailsModule } from './sale-details/sale-details.module';
 
 
 
@@ -21,7 +22,7 @@ import {TypeOrmModule} from '@nestjs/typeorm'
       autoLoadEntities: true,
       synchronize: true, 
     }),
-    UsersModule, NewsModule, SalesModule, ProductsModule, ReportsModule, AuthModule],
+    UsersModule, NewsModule, SalesModule, ProductsModule, ReportsModule, AuthModule, SaleDetailsModule],
   controllers: [],
   providers: [],
 })
