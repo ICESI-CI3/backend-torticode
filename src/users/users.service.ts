@@ -30,15 +30,17 @@ export class UsersService {
 
   
   async create(createUserDto: CreateSupervisorDto | CreateRestaurantDto | CreateStudentDto): Promise<User> {
-    if (createUserDto instanceof CreateRestaurantDto) {
+    const { email, password, ...rest } = createUserDto;
+    
+    if ('name' in rest && 'manager' in rest) {
       const restaurant = this.restaurantRepository.create(createUserDto);
       restaurant.role = Role.RESTAURANT; 
       return await this.restaurantRepository.save(restaurant);
-    } else if (createUserDto instanceof CreateStudentDto) {
+    }  else if ('lastname' in rest && 'dni' in rest && 'code' in rest && 'program' in rest) {
       const student = this.studentRepository.create(createUserDto);
       student.role = Role.STUDENT; 
       return await this.studentRepository.save(student);
-    } else if (createUserDto instanceof CreateSupervisorDto) {
+    }  else if ('lastname' in rest && 'dni' in rest) {
       const supervisor = this.supervisorRepository.create(createUserDto);
       supervisor.role = Role.SUPERVISOR; 
       return await this.supervisorRepository.save(supervisor);
@@ -46,7 +48,7 @@ export class UsersService {
       throw new BadRequestException('The provided data does not match any known user type');
     }
   }
-  
+
   async findAll() {
     return await this.userRepository.find();
   }
@@ -66,5 +68,16 @@ export class UsersService {
 
   async findByRole(role: Role): Promise<User[]> {
     return await this.userRepository.find({ where: { role } });
+  }
+
+  findOneByEmail(email: string) {
+    return this.userRepository.findOneBy({ email });
+  }
+
+  findByEmailWithPassword(email: string) {
+    return this.userRepository.findOne({
+      where: { email },
+      select: ['id', 'email', 'password', 'role'],
+    });
   }
 }
