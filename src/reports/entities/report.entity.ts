@@ -1,7 +1,7 @@
 import { Restaurant } from 'src/roles/entities/restaurant.entity';
 import { Student } from 'src/roles/entities/student.entity';
-import { User } from 'src/users/entities/user.entity';
-import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Sale } from 'src/sales/entities/sale.entity';
+import { Column, CreateDateColumn, Entity, ManyToMany, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
 export class Report {
@@ -20,6 +20,15 @@ export class Report {
 
     @Column()
     periodEnd: Date; 
+
+    @ManyToOne(() => Restaurant, restaurant => restaurant.reports)
+    restaurant: Restaurant;
+
+    @ManyToOne(() => Student, student => student.reports)
+    student: Student;
+
+    @ManyToMany(() => Sale, sales => sales.reports)
+    sales: Sale[];
    
     @Column('decimal', { precision: 10, scale: 2 })
     totalSales: number;
@@ -27,9 +36,4 @@ export class Report {
     @Column('int', { name: 'total_transactions' })
     totalTransactions: number;
 
-    @ManyToOne(() => Restaurant, restaurant => restaurant.reports)
-    restaurant: Restaurant;
-
-    @ManyToOne(() => Student, student => student.reports)
-    student: Student;
 }
