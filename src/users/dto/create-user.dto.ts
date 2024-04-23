@@ -6,7 +6,7 @@ export class CreateUserDto {
     readonly email: string;
 
     @Transform(({ value }) => value.trim()) //Vacios
-    @IsString()
+    @IsString({message: 'The password must be a string'})
     @MinLength(6)
     @Matches(
         /(?:(?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$/, {
