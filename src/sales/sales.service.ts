@@ -30,19 +30,24 @@ export class SalesService {
     const { restaurantId, studentId, saleDetails } = createSaleDto;
     const restaurant = await this.restaurantRepository.findOne({where:{id:restaurantId}});
     const student = await this.studentRepository.findOne({where:{id:studentId}})
+    const sale = new Sale();
+
     if (!restaurant) {
+      await this.saleRepository.save(sale)
       throw new NotFoundException('Restaurant no found.');
     }
     if (!student) {
-        throw new NotFoundException('Student no found.');
+      await this.saleRepository.save(sale)
+      throw new NotFoundException('Student no found.');
     }
-    const sale = new Sale();
+    
     sale.restaurant = restaurant
     sale.student = student
     sale.status = Status.PENDING;
 
     let totalValue = 0;
-    const details = saleDetails.map(async detail => {
+    try{
+       const details = saleDetails.map(async detail => {
         const saleDetail = new SaleDetail();
         const product = await this.productRepository.findOne({where:{id:detail.productId}});
         if(!product){
@@ -68,6 +73,12 @@ export class SalesService {
     restaurant.balance += totalValue;
     sale.status = Status.COMPLETED;
 
+    }catch(err){
+      sale.status = Status.FAILED;
+      await this.saleRepository.save(sale);
+      throw new BadRequestException("Error processing sale. Sale has been cancelled.");
+    }
+    
     this.studentRepository.save(student);
     this.restaurantRepository.save(restaurant);
     this.saleDetailRepository.save(sale.saleDetails);
