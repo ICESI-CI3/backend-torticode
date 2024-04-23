@@ -7,7 +7,7 @@ import { UpdateNewsDto } from './dto/update-news.dto';
 export class NewsController {
   constructor(private readonly newsService: NewsService) {}
 
-  @Post('restaurant/:userId')
+  @Post('restaurant/:userId') //Se cambiará cuando haya autorización para obtener el usuario logueado
   create(@Param('userId') userId:number, @Body() createNewsDto: CreateNewsDto) {
     return this.newsService.create(+userId,createNewsDto);
   }
