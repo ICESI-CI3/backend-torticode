@@ -65,4 +65,15 @@ export class UsersController {
   async findByRole(@Param('role') role: Role): Promise<User[]> {
     return await this.usersService.findByRole(role);
   }
+
+  @Patch('balance/:id')
+  updateBalance(@Param('id') id: number, @Body('amount') amount: number) {
+    return this.usersService.updateBalance(id, amount);
+  }
+
+  @Patch('role/:id')
+  updateRole(@Param('id') id: number, @Body('role') role: Role) {
+    return this.usersService.updateRole(id, role);
+  }
+  
 }

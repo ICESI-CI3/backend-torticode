@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateRestaurantDto } from 'src/roles/dto/create-restaurant.dto';
 import{ CreateStudentDto } from 'src/roles/dto/create-student.dto';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -7,7 +7,7 @@ import { User } from './entities/user.entity';
 import { Restaurant } from 'src/roles/entities/restaurant.entity';
 import { Student } from 'src/roles/entities/student.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { In, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import { Role } from 'src/roles/enum/role.enum';
 import { UpdateStudentDto } from 'src/roles/dto/update-student.dto';
 import { UpdateRestaurantDto } from 'src/roles/dto/update-restaurant.dto';
@@ -48,22 +48,46 @@ export class UsersService {
       throw new BadRequestException('The provided data does not match any known user type');
     }
   }
-
-  async findAll() {
+  
+  async findAll(): Promise<User[]> {
     return await this.userRepository.find();
   }
 
-  async findOne(id:number){
-    return await this.userRepository.find();
+  async findOne(id: number): Promise<User> {
+    const user = await this.userRepository.findOne({ where: { id }});
+    if (!user) {
+      throw new NotFoundException(`User with ID ${id} not found.`);
+    }
+    return user;
   }
-
   async update(id: number, updateUserDto: UpdateUserDto | UpdateStudentDto | UpdateRestaurantDto) {
     
     return await this.userRepository.update(id,updateUserDto);
   }
 
-  async remove(id: number) {
-    return await this.userRepository.softDelete(id);
+  async remove(id: number): Promise<void> {
+    const result = await this.userRepository.softDelete(id);
+    if (result.affected === 0) {
+      throw new NotFoundException(`User with ID ${id} not found.`);
+    }
+  }
+
+  async updateBalance(id: number, amount: number): Promise<User> { //Cambia con autorizacion
+    const user = await this.userRepository.findOne({ where: { id } });
+    if (!user) {
+      throw new NotFoundException(`User with ID ${id} not found.`);
+    }
+    user.balance += amount;
+    return await this.userRepository.save(user);
+  }
+
+  async updateRole(id: number, role: Role): Promise<User> { //Cambia con autorizacion
+    const user = await this.userRepository.findOne({ where: { id } });
+    if (!user) {
+      throw new NotFoundException(`User with ID ${id} not found.`);
+    }
+    user.role = role;
+    return await this.userRepository.save(user);
   }
 
   async findByRole(role: Role): Promise<User[]> {

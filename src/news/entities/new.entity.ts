@@ -1,5 +1,6 @@
 import { Column, DeleteDateColumn, Entity, PrimaryGeneratedColumn , ManyToOne} from 'typeorm';
 import { User } from '../../users/entities/user.entity';
+import { Restaurant } from 'src/roles/entities/restaurant.entity';
 @Entity('news')
 export class New {
 
@@ -18,8 +19,7 @@ export class New {
 
     @DeleteDateColumn()
     deletedAt: Date;
-
-    @ManyToOne(() => User, user => user.news)
-    user: User;
     
+    @ManyToOne(() => Restaurant, restaurant=>restaurant.news)
+    restaurant: Restaurant;
 }
