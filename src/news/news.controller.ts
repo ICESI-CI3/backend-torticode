@@ -7,9 +7,9 @@ import { UpdateNewsDto } from './dto/update-news.dto';
 export class NewsController {
   constructor(private readonly newsService: NewsService) {}
 
-  @Post()
-  create(@Body() createNewsDto: CreateNewsDto) {
-    return this.newsService.create(createNewsDto);
+  @Post(':userId')
+  create(@Param('userId') userId:number, @Body() createNewsDto: CreateNewsDto) {
+    return this.newsService.create(+userId,createNewsDto);
   }
 
   @Get()
