@@ -7,7 +7,7 @@ export class RegisterDto {
   email: string;
 
   @Transform(({ value }) => value.trim()) //Vacios
-  @IsString()
+  @IsString({message: 'The password must have a number, uppercase and lowercase letters.'})
   @MinLength(6)
   @Matches(
       /(?:(?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$/, {
