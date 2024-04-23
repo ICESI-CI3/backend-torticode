@@ -11,13 +11,6 @@ import { Auth } from './decorators/auth.decorators';
 import { ActiveUser } from 'src/common/decorators/active-user.decorators';
 import { UserActiveInterface } from 'src/common/interfaces/user-active.interface';
 
-interface RequestWithUser extends Request{
-  user: {
-    email: string; 
-    role: string 
-  }
-
-}
 
 @Controller('auth')
 export class AuthController {
