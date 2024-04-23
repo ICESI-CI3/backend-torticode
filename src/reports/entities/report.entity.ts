@@ -16,10 +16,10 @@ export class Report {
     fechaCreacion: Date;
 
     @Column()
-    startPeriod: Date;
+    periodStart: Date;
 
     @Column()
-    endPeriod: Date; 
+    periodEnd: Date; 
    
     @Column('decimal', { precision: 10, scale: 2 })
     totalSales: number;
