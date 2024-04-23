@@ -33,6 +33,14 @@ export class AuthController {
         return this.authService.login(loginDto);
     }
 
+    @Post('register')
+    register(
+    @Body()
+    registerDto: any,
+  ) {
+    return this.authService.register(registerDto);
+  }
+
     
 
     @Get('profile')

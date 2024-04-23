@@ -2,7 +2,10 @@ import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/commo
 import { ProductsService } from './products.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
+import { Auth } from 'src/auth/decorators/auth.decorators';
+import { Role } from 'src/roles/enum/role.enum';
 
+@Auth(Role.RESTAURANT)
 @Controller('products')
 export class ProductsController {
   constructor(private readonly productsService: ProductsService) {}
