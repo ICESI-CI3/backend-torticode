@@ -5,6 +5,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Product } from './entities/product.entity';
 import { Repository } from 'typeorm';
 import { HttpException } from '@nestjs/common';
+import { UsersService } from '../users/users.service';
 
 @Injectable()
 /**
@@ -14,7 +15,8 @@ export class ProductsService {
 
   constructor(
     @InjectRepository(Product) 
-    private productRepository: Repository<Product>
+    private productRepository: Repository<Product>,
+    private readonly usersService: UsersService,
   ) {}
 
   /**
@@ -22,7 +24,7 @@ export class ProductsService {
    * @param createProductDto - The data for creating the product.
    * @returns The created product.
    */
-  async create(restaurantId:number, createProductDto: CreateProductDto): Promise<Product> {
+  /*async create(restaurantId:number, createProductDto: CreateProductDto): Promise<Product> {
     // Check if the product with the same name already exists
 
     const name  = createProductDto.name
@@ -37,6 +39,34 @@ export class ProductsService {
       throw new HttpException('Product with this name already exists', HttpStatus.BAD_REQUEST);
     }
     const product = this.productRepository.create(createProductDto);
+    return await this.productRepository.save(product);
+  }*/
+
+  async create({email}: {email: string;}, createProductDto: CreateProductDto): Promise<Product> {
+    const user = await this.usersService.findOneByEmail(email);
+    console.log(user.id);
+
+    if (!user) {
+      throw new NotFoundException(`User not found with email ${email}`);
+    }
+
+    const productName = createProductDto.name;
+    const productExists = await this.productRepository.findOne({
+      where: {
+        name: productName,
+        restaurant: { id: user.id} 
+      }
+    });
+
+    if (productExists) {
+      throw new HttpException('Product with this name already exists', HttpStatus.BAD_REQUEST);
+    }
+
+    const product = this.productRepository.create({
+      ...createProductDto,
+      restaurant: { id: user.id} // Asociar el producto al restaurante del usuario
+    });
+
     return await this.productRepository.save(product);
   }
 

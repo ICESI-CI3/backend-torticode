@@ -10,7 +10,9 @@ import { UpdateRestaurantDto } from 'src/roles/dto/update-restaurant.dto';
 import { UpdateSupervisorDto } from 'src/roles/dto/update-supervisor.dto';
 import { Role } from 'src/roles/enum/role.enum';
 import { User } from './entities/user.entity';
+import { Auth } from 'src/auth/decorators/auth.decorators';
 
+@Auth(Role.SUPERVISOR)
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
@@ -29,7 +31,7 @@ export class UsersController {
   createSupervisor(@Body() createSupervisorDto: CreateSupervisorDto) {
     return this.usersService.create(createSupervisorDto);
   }
-
+  
   @Get()
   findAll() {
     return this.usersService.findAll();
