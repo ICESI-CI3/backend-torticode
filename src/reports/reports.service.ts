@@ -1,11 +1,13 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateReportDto } from './dto/create-report.dto';
 import { UpdateReportDto } from './dto/update-report.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository} from 'typeorm';
+import { Between, Repository} from 'typeorm';
 import { Report } from './entities/report.entity';
 import { Sale } from '../sales/entities/sale.entity';
-import { getRepositoryToken } from '@nestjs/typeorm'; 
+import { User } from 'src/users/entities/user.entity';
+import { Role } from 'src/roles/enum/role.enum';
+
 @Injectable()
 export class ReportsService {
 
@@ -14,22 +16,45 @@ export class ReportsService {
     private readonly reportRepository: Repository<Report>,
     @InjectRepository(Sale)
     private readonly saleRepository: Repository<Sale>,
+    @InjectRepository(User)
+    private userRepository: Repository<User>
 
   ){}
 
-  async create(createReportDto: CreateReportDto) {
-    // Obtener el número total de ventas
-    const totalSales = await this.saleRepository.count();
-    // Calcular ganancias
-    const totalEarnings = await this.calculateTotalEarnings();
-    // Crear un nuevo reporte
-    const report = this.create({
-      title: createReportDto.title,
-      totalSales,
-      totalEarnings,
+  async create(createReportDto: CreateReportDto, userId: number): Promise<Report> {
+    const { title, periodStart, periodEnd } = createReportDto;
+
+    const user = (await this.userRepository.findOne({where:{id:userId}}));
+    const userType = user.role;
+    if (!userType) {
+        throw new NotFoundException(`User not found with ID ${userId}`);
+    }
+
+    if(userType != Role.RESTAURANT && userType != Role.STUDENT){
+      throw new NotFoundException(`Invalid user type ${userType} dont have sales`);
+    } 
+   
+    const sales = await this.saleRepository.find({
+      where: {
+          createdAt: Between(new Date(periodStart), new Date(periodEnd)), restaurant: { id: userId } 
+      }
     });
-    return await this.reportRepository.save(report);
-  }
+
+    // Calculate totals
+    const totalSales = sales.reduce((sum, sale) => sum + sale.totalValue, 0);
+    const totalTransactions = sales.length;
+    const report = this.reportRepository.create({
+        title,
+        periodStart: new Date(periodStart),
+        periodEnd: new Date(periodEnd),
+        totalSales,
+        totalTransactions,
+        user: user,
+        sales
+    });
+
+    return this.reportRepository.save(report);
+}
 
   async findAll() {
     return await this.reportRepository.find();
@@ -46,22 +71,5 @@ export class ReportsService {
   async remove(id: number) {
     return await this.reportRepository.softDelete(id);
   }
-
-    /**
-   * Calculates the total earnings by summing the total price of each sale in the database.
-   * @returns A promise that resolves to the total earnings.
-   */
-    async calculateTotalEarnings(): Promise<number> {
-      const saleRepository = this.saleRepository;
-      const sales = await saleRepository.find(); // Obtener todas las ventas de la base de datos
-
-      let totalEarnings = 0;
-      for (const sale of sales) {
-          totalEarnings += sale.product.price * sale.quantity; // Sumar el precio total de cada venta al total de ganancias
-      }
-
-      return totalEarnings;
-  }
-
-
+  
 }

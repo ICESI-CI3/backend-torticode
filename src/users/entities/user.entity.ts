@@ -1,7 +1,7 @@
 import { Role } from "src/roles/enum/role.enum";
 import { Column, DeleteDateColumn, Entity, PrimaryGeneratedColumn, Table, TableInheritance, OneToMany, ManyToOne} from "typeorm";
-import { New } from '../../news/entities/new.entity';
 import { Supervisor } from "src/roles/entities/supervisor.entity";
+import { Report } from "src/reports/entities/report.entity";
 
 
 @Entity('users')
@@ -32,6 +32,9 @@ export abstract class User {
 
     @ManyToOne(() => Supervisor, supervisor => supervisor.users)
     supervisor: Supervisor;
+
+    @OneToMany(() => Report, reports => reports.user)
+    reports: Report[];
 
     constructor() {
         this.role = 'admin';

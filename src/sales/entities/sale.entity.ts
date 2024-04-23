@@ -33,7 +33,7 @@ export class Sale {
     status:string;
 
     @Column('timestamp', { nullable: false, default: () => 'CURRENT_TIMESTAMP' })
-    createdAt: number;
+    createdAt: Date;
 
     @DeleteDateColumn()
     deletedAt: Date;
