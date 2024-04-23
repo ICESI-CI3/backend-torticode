@@ -31,7 +31,7 @@ export class UsersController {
   createSupervisor(@Body() createSupervisorDto: CreateSupervisorDto) {
     return this.usersService.create(createSupervisorDto);
   }
-
+  
   @Get()
   findAll() {
     return this.usersService.findAll();

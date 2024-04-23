@@ -10,9 +10,9 @@ import { Auth } from 'src/auth/decorators/auth.decorators';
 export class NewsController {
   constructor(private readonly newsService: NewsService) {}
 
-  @Post('restaurant/') //Se cambiará cuando haya autorización para obtener el usuario logueado
-  create(@Body() createNewsDto: CreateNewsDto) {
-    return this.newsService.create(createNewsDto);
+  @Post('restaurant/:userId') //Se cambiará cuando haya autorización para obtener el usuario logueado
+  create(@Param('userId') userId:number, @Body() createNewsDto: CreateNewsDto) {
+    return this.newsService.create(+userId,createNewsDto);
   }
 
   @Get()

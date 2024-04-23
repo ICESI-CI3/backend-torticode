@@ -44,7 +44,9 @@ export class AuthController {
     
 
     @Get('profile')
-    @Auth(Role.SUPERVISOR)
+    //@Auth(Role.SUPERVISOR)
+    @Auth(Role.RESTAURANT)
+    //@Auth(Role.STUDENT)
     profile(@ActiveUser() user: UserActiveInterface) {
       console.log(user)
       return this.authService.profile(user);
