@@ -6,23 +6,28 @@ import { Repository } from 'typeorm';
 import { New } from './entities/new.entity';
 import { Restaurant } from 'src/roles/entities/restaurant.entity';
 import { throws } from 'assert';
+import { UsersService } from 'src/users/users.service';
 
 @Injectable()
 export class NewsService {
+  
   constructor(
     @InjectRepository(New)
     private newsRepository: Repository<New>,
     @InjectRepository(Restaurant)
-    private restaurantRepository: Repository<Restaurant>
+    private restaurantRepository: Repository<Restaurant>,
+    private readonly usersService: UsersService,
   ){}
   
-  async create(userId: number, createNewsDto: CreateNewsDto) {
-    const user = (await this.restaurantRepository.findOne({where:{id:userId}}));
+  async create({email}: {email:string;}, createNewsDto: CreateNewsDto) {
+    const userTest = await this.usersService.findOneByEmail(email);
+    const user = await userTest;
+    console.log(user.id);
     if(!user){
-      throw new NotFoundException(`Restaurant not found with ID ${userId}`);
+      throw new NotFoundException(`Restaurant not found with ID ${user.id}`);
     }
     const news = this.newsRepository.create(createNewsDto);
-    news.restaurant = user;
+    news.restaurant = user as Restaurant;
     return await this.newsRepository.save(news);
   }
 
