@@ -21,6 +21,6 @@ export class CreateRestaurantDto extends CreateUserDto{
   manager: string;
 
   @IsNotEmpty()
-  @IsPhoneNumber()
+  @IsString()
   phone: string;
 }

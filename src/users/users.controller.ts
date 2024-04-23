@@ -8,6 +8,8 @@ import { CreateSupervisorDto } from 'src/roles/dto/create-supervisor.dto';
 import { UpdateStudentDto } from 'src/roles/dto/update-student.dto';
 import { UpdateRestaurantDto } from 'src/roles/dto/update-restaurant.dto';
 import { UpdateSupervisorDto } from 'src/roles/dto/update-supervisor.dto';
+import { Role } from 'src/roles/enum/role.enum';
+import { User } from './entities/user.entity';
 
 @Controller('users')
 export class UsersController {
@@ -57,5 +59,10 @@ export class UsersController {
   @Delete(':id')
   remove(@Param('id') id: number) {
     return this.usersService.remove(id);
+  }
+
+  @Get('/by-role/:role')
+  async findByRole(@Param('role') role: Role): Promise<User[]> {
+    return await this.usersService.findByRole(role);
   }
 }

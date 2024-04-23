@@ -3,7 +3,9 @@ import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule,  {
+    logger: ['log', 'error', 'warn', 'debug', 'verbose'], // Aquí defines los niveles de registro que deseas habilitar
+  });
 
   app.setGlobalPrefix('api')
   app.useGlobalPipes(
