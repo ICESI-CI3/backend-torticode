@@ -7,6 +7,7 @@ import { AuthGuard } from './guard/auth.guard';
 import {Request} from 'express'; 
 import {Roles} from './decorators/roles.decorators';
 import { RolesGuard } from './guard/roles.guard';
+import { Auth } from './decorators/auth.decorators';
 
 interface RequestWithUser extends Request{
   user: {
@@ -40,7 +41,7 @@ export class AuthController {
 
 
   @Get('profile')
-  @Roles(Role.SUPERVISOR)
+  @Auth(Role.SUPERVISOR)
   @UseGuards(AuthGuard, RolesGuard)
   profile(
     @Req()
