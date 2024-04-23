@@ -28,7 +28,10 @@ export class NewsService {
 
   async findAll(): Promise<New[]> {
     return await this.newsRepository.find({
-      relations: ['restaurant'] 
+      relations: ['restaurant'],
+      order: {
+        createdAt: 'DESC' // Order by the 'createdAt' field in descending order
+      }
     });
   }
 
@@ -60,4 +63,20 @@ export class NewsService {
       throw new NotFoundException(`News with ID ${id} not found.`);
     }
   }
+
+  async findByRestaurantId(restaurantId: number): Promise<New[]> {
+    const user = (await this.restaurantRepository.findOne({where:{id:restaurantId}}));
+    const news = await this.newsRepository.find({
+      where: { restaurant: user },
+      relations: ['restaurant'],
+      order: {
+        createdAt: 'DESC' // Order by the 'createdAt' field in descending order
+      }
+    });
+    if (!news.length) {
+      throw new NotFoundException(`News for Restaurant with ID ${restaurantId} not found.`);
+    }
+    return news;
+  }
+
 }
