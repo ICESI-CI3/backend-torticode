@@ -1,26 +1,39 @@
-import { Column, DeleteDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
-import { Product } from '../../products/entities/product.entity';
+import { Column, DeleteDateColumn, Entity, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { User } from '../../users/entities/user.entity';
+import { SaleDetail } from 'src/sale-details/entities/sale-detail.entity';
+import { Res } from '@nestjs/common';
+import { Restaurant } from 'src/roles/entities/restaurant.entity';
+import { Student } from 'src/roles/entities/student.entity';
+import { Status } from '../enum/status.enum';
+import { Report } from 'src/reports/entities/report.entity';
 
 @Entity()
 export class Sale {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @ManyToOne(() => Product)
-    product: Product;
+    @OneToMany(() => SaleDetail, saleDetails => saleDetails.sale)
+    saleDetails: SaleDetail[];
 
-    @Column()
-    quantity: number;
+    @ManyToOne(() => Restaurant, restaurant => restaurant.sales) 
+    restaurant: Restaurant;
 
-    @ManyToOne(() => User)
-    restaurant: User;
+    @ManyToOne(() => Student, student => student.sales)
+    student: Student;
 
-    @ManyToOne(() => User)
-    student: User;
+    @ManyToMany(() => Report, reports => reports.sales)
+    reports: Report[];
+
+    @Column('decimal', { precision: 12, scale: 2, default: 0 })
+    get totalValue(): number {
+        return this.saleDetails.reduce((acc, detail) => acc + detail.subtotal, 0);
+    }
+
+    @Column({type: 'enum', enum: Status})
+    status:string;
 
     @Column('timestamp', { nullable: false, default: () => 'CURRENT_TIMESTAMP' })
-    createdAt: number;
+    createdAt: Date;
 
     @DeleteDateColumn()
     deletedAt: Date;

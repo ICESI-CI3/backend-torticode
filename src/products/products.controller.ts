@@ -7,11 +7,10 @@ import { UpdateProductDto } from './dto/update-product.dto';
 export class ProductsController {
   constructor(private readonly productsService: ProductsService) {}
 
-  @Post()
-  create(@Body() createProductDto: CreateProductDto) {
-    return this.productsService.create(createProductDto);
+  @Post('restaurant/:userId') //Se cambiará cuando haya autorización para obtener el usuario logueado
+  create(@Param('userId') userId:number, @Body() createProductDto: CreateProductDto) {
+    return this.productsService.create(+userId, createProductDto);
   }
-
   @Get()
   findAll() {
     return this.productsService.findAll();
@@ -30,5 +29,10 @@ export class ProductsController {
   @Delete(':id')
   remove(@Param('id') id: number) {
     return this.productsService.remove(id);
+  }
+
+  @Get('restaurant/:restaurantId')
+  findByRestaurant(@Param('restaurantId') restaurantId: number) {
+    return this.productsService.findByRestaurant(restaurantId);
   }
 }

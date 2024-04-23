@@ -1,6 +1,7 @@
 import { Role } from "src/roles/enum/role.enum";
-import { Column, DeleteDateColumn, Entity, PrimaryGeneratedColumn, Table, TableInheritance, OneToMany} from "typeorm";
-import { New } from '../../news/entities/new.entity';
+import { Column, DeleteDateColumn, Entity, PrimaryGeneratedColumn, Table, TableInheritance, OneToMany, ManyToOne} from "typeorm";
+import { Supervisor } from "src/roles/entities/supervisor.entity";
+import { Report } from "src/reports/entities/report.entity";
 
 
 @Entity('users')
@@ -29,8 +30,11 @@ export abstract class User {
     @DeleteDateColumn()
     deleteAt: Date;
 
-    @OneToMany(() => New, news => news.user)
-    news: New[];
+    @ManyToOne(() => Supervisor, supervisor => supervisor.users)
+    supervisor: Supervisor;
+
+    @OneToMany(() => Report, reports => reports.user)
+    reports: Report[];
 
     constructor() {
         this.role = 'admin';

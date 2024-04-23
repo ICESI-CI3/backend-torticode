@@ -7,8 +7,6 @@ import { NewsModule } from './news/news.module';
 import { AuthModule } from './auth/auth.module';
 import {TypeOrmModule} from '@nestjs/typeorm'
 
-
-
 @Module({
   imports: [ 
     TypeOrmModule.forRoot({
