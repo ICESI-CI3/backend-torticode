@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -22,27 +22,30 @@ export class ProductsService {
    * @param createProductDto - The data for creating the product.
    * @returns The created product.
    */
-  async create(createProductDto: CreateProductDto) {
-    /*
-    const productFound = this.productRepository.findOne({
-      where: {
-        id: createProductDto.id
-      }
-    })
+  async create(restaurantId:number, createProductDto: CreateProductDto): Promise<Product> {
+    // Check if the product with the same name already exists
 
-    if (productFound) {
-      return new HttpException('Product already exists', 400);
-    }*/
-    const product = this.productRepository.create(createProductDto); //Crea un objeto en memoria
-    return await this.productRepository.save(product); //Guarda el objeto en bd
+    const name  = createProductDto.name
+    const productExists = await this.productRepository.findOne({
+      where: {
+        name: name,
+        restaurant: { id: restaurantId }
+      }
+    });
+
+    if (productExists) {
+      throw new HttpException('Product with this name already exists', HttpStatus.BAD_REQUEST);
+    }
+    const product = this.productRepository.create(createProductDto);
+    return await this.productRepository.save(product);
   }
 
   /**
    * Retrieves all products.
    * @returns An array of products.
    */
-  async findAll() {
-    return await this.productRepository.find();
+  async findAll(): Promise<Product[]> {
+    return await this.productRepository.find({ relations: ['restaurant'] });
   }
 
   /**
@@ -50,8 +53,15 @@ export class ProductsService {
    * @param id - The ID of the product.
    * @returns The found product, or undefined if not found.
    */
-  async findOne(id: number) {
-    return await this.productRepository.findOneBy({id});
+  async findOne(id: number): Promise<Product> {
+    const product = await this.productRepository.findOne({
+      where: { id },
+      relations: ['restaurant']
+    });
+    if (!product) {
+      throw new NotFoundException(`Product with ID ${id} not found.`);
+    }
+    return product;
   }
 
   /**
@@ -60,8 +70,15 @@ export class ProductsService {
    * @param updateProductDto - The data for updating the product.
    * @returns The updated product.
    */
-  async update(id: number, updateProductDto: UpdateProductDto) {
-    return await this.productRepository.update(id,updateProductDto);
+  async update(id: number, updateProductDto: UpdateProductDto): Promise<Product> {
+    const product = await this.productRepository.preload({
+      id: id,
+      ...updateProductDto
+    });
+    if (!product) {
+      throw new NotFoundException(`Product with ID ${id} not found.`);
+    }
+    return await this.productRepository.save(product);
   }
   
   /**
@@ -69,9 +86,22 @@ export class ProductsService {
    * @param id - The ID of the product to remove.
    * @returns The removed product.
    */
-  async remove(id: number) {
-    return await this.productRepository.softDelete({id}); //id //SoftDelete - delete logic
-  
-    //return await this.productRepository.softRemove({id}) //instancia
+  async remove(id: number): Promise<void> {
+    const result = await this.productRepository.softDelete(id);
+    if (result.affected === 0) {
+      throw new NotFoundException(`Product with ID ${id} not found.`);
+    }
+  }
+
+  /**
+   * Retrieves all products for a specific restaurant.
+   * @param restaurantId - The ID of the restaurant.
+   * @returns An array of products for the specified restaurant.
+   */
+  async findByRestaurant(restaurantId: number): Promise<Product[]> {
+    return await this.productRepository.find({
+      where: { restaurant: { id: restaurantId } },
+      relations: ['restaurant']
+    });
   }
 }

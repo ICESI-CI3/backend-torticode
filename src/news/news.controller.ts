@@ -7,9 +7,9 @@ import { UpdateNewsDto } from './dto/update-news.dto';
 export class NewsController {
   constructor(private readonly newsService: NewsService) {}
 
-  @Post()
-  create(@Body() createNewsDto: CreateNewsDto) {
-    return this.newsService.create(createNewsDto);
+  @Post('restaurant/:userId') //Se cambiará cuando haya autorización para obtener el usuario logueado
+  create(@Param('userId') userId:number, @Body() createNewsDto: CreateNewsDto) {
+    return this.newsService.create(+userId,createNewsDto);
   }
 
   @Get()
@@ -30,5 +30,10 @@ export class NewsController {
   @Delete(':id')
   remove(@Param('id') id: number) {
     return this.newsService.remove(+id);
+  }
+
+  @Get('restaurant/:restaurantId')
+  findByRestaurantId(@Param('restaurantId') restaurantId: number) {
+    return this.newsService.findByRestaurantId(+restaurantId);
   }
 }

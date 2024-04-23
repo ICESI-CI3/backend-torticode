@@ -2,6 +2,7 @@ import { Entity, Column, OneToMany, JoinColumn, ChildEntity } from 'typeorm';
 import { User } from '../../users/entities/user.entity';
 import { Sale } from 'src/sales/entities/sale.entity';
 import { New } from 'src/news/entities/new.entity';
+import { Product } from 'src/products/entities/product.entity';
 
 @ChildEntity('restaurant')
 export class Restaurant extends User{
@@ -17,14 +18,14 @@ export class Restaurant extends User{
     @Column()
     phone:string;
 
-    //@OneToMany(() => Sale, sale=>sale.restaurant)
-    //sale: Sale[];
+    @OneToMany(() => Sale, sales=>sales.restaurant)
+    sales: Sale[];
 
-    //@OneToMany(() => New, new=>new.restaurant)
-    //new: New[];
+    @OneToMany(() => New, news=>news.restaurant)
+    news: New[];
 
-    //@OneToMany(() => Product, product=>product.restaurant)
-    //new: New[];
+    @OneToMany(() => Product, products=>products.restaurant)
+    products: Product[];
 
     constructor() {
         super();
