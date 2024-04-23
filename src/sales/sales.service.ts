@@ -123,5 +123,4 @@ export class SalesService {
       throw new NotFoundException(`Sale with ID ${id} not found.`);
     }
   }
-  
 }
