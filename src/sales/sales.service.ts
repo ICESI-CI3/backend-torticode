@@ -75,19 +75,42 @@ export class SalesService {
     return this.saleRepository.save(sale);
   }
 
-  async findAll() {
-    return await this.saleRepository.find();
+  async findAll(): Promise<Sale[]> {
+    return await this.saleRepository.find({
+      relations: ['saleDetails', 'saleDetails.product', 'restaurant', 'student'],
+    });
   }
+  
 
-  async findOne(id: number) {
-    return await this.saleRepository.findOneBy({id});
+  async findOne(id: number): Promise<Sale> {
+    const sale = await this.saleRepository.findOne({
+      where: { id: id },
+      relations: ['saleDetails', 'saleDetails.product', 'restaurant', 'student'],
+    });
+    if (!sale) {
+      throw new NotFoundException(`Sale with ID ${id} not found.`);
+    }
+    return sale;
   }
+  
 
-  async update(id: number, updateSaleDto: UpdateSaleDto) {
-    return await this.saleRepository.update(id,updateSaleDto)
+  async update(id: number, updateSaleDto: UpdateSaleDto): Promise<Sale> {
+    const sale = await this.saleRepository.preload({
+      id: id,
+      ...updateSaleDto,
+    });
+    if (!sale) {
+      throw new NotFoundException(`Sale with ID ${id} not found.`);
+    }
+    return this.saleRepository.save(sale);
   }
+  
 
-  async remove(id: number) {
-    return await this.saleRepository.softDelete(id);
+  async remove(id: number): Promise<void> {
+    const result = await this.saleRepository.softDelete(id);
+    if (result.affected === 0) {
+      throw new NotFoundException(`Sale with ID ${id} not found.`);
+    }
   }
+  
 }
