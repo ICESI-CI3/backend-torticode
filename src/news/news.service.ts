@@ -16,13 +16,8 @@ export class NewsService {
     private restaurantRepository: Repository<Restaurant>
   ){}
   
-  async create(userId: number, createNewsDto: CreateNewsDto) {
-    const user = (await this.restaurantRepository.findOne({where:{id:userId}}));
-    if(!user){
-      throw new NotFoundException(`Restaurant not found with ID ${userId}`);
-    }
+  async create(createNewsDto: CreateNewsDto) {
     const news = this.newsRepository.create(createNewsDto);
-    news.restaurant = user;
     return await this.newsRepository.save(news);
   }
 

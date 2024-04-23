@@ -2,14 +2,17 @@ import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/commo
 import { NewsService } from './news.service';
 import { CreateNewsDto } from './dto/create-news.dto';
 import { UpdateNewsDto } from './dto/update-news.dto';
+import { Role } from 'src/roles/enum/role.enum';
+import { Auth } from 'src/auth/decorators/auth.decorators';
 
+@Auth(Role.RESTAURANT)
 @Controller('news')
 export class NewsController {
   constructor(private readonly newsService: NewsService) {}
 
-  @Post('restaurant/:userId') //Se cambiará cuando haya autorización para obtener el usuario logueado
-  create(@Param('userId') userId:number, @Body() createNewsDto: CreateNewsDto) {
-    return this.newsService.create(+userId,createNewsDto);
+  @Post('restaurant/') //Se cambiará cuando haya autorización para obtener el usuario logueado
+  create(@Body() createNewsDto: CreateNewsDto) {
+    return this.newsService.create(createNewsDto);
   }
 
   @Get()
