@@ -8,6 +8,8 @@ import {Request} from 'express';
 import {Roles} from './decorators/roles.decorators';
 import { RolesGuard } from './guard/roles.guard';
 import { Auth } from './decorators/auth.decorators';
+import { ActiveUser } from 'src/common/decorators/active-user.decorators';
+import { UserActiveInterface } from 'src/common/interfaces/user-active.interface';
 
 interface RequestWithUser extends Request{
   user: {
@@ -31,24 +33,14 @@ export class AuthController {
         return this.authService.login(loginDto);
     }
 
-    @Post('register')
-    register(
-    @Body()
-    registerDto: any,
-  ) {
-    return this.authService.register(registerDto);
+    
+
+    @Get('profile')
+    @Auth(Role.SUPERVISOR)
+    profile(@ActiveUser() user: UserActiveInterface) {
+      console.log(user)
+      return this.authService.profile(user);
+    }
   }
 
 
-  @Get('profile')
-  @Auth(Role.SUPERVISOR)
-  @UseGuards(AuthGuard, RolesGuard)
-  profile(
-    @Req()
-    req : RequestWithUser,
-  ) {
-    return  this.authService.profile(req.user)
-}
-
-
-}
