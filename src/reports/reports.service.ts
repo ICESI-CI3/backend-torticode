@@ -56,20 +56,39 @@ export class ReportsService {
     return this.reportRepository.save(report);
 }
 
-  async findAll() {
-    return await this.reportRepository.find();
-  }
+async findAll() {
+  return this.reportRepository.find({
+    relations: ['user', 'sales']
+  });
+}
 
-  async findOne(id: number) {
-    return await this.reportRepository.findOneBy({id});
+async findOne(id: number) {
+  const report = await this.reportRepository.findOne({
+    where: { id },
+    relations: ['user', 'sales']
+  });
+  if (!report) {
+    throw new NotFoundException(`Report with ID ${id} not found.`);
   }
+  return report;
+}
 
-  async update(id: number, updateReportDto: UpdateReportDto) {
-    return await this.reportRepository.update(id, updateReportDto);
+async update(id: number, updateReportDto: UpdateReportDto) {
+  const report = await this.reportRepository.preload({
+    id,
+    ...updateReportDto
+  });
+  if (!report) {
+    throw new NotFoundException(`Report with ID ${id} not found.`);
   }
+  return this.reportRepository.save(report);
+}
 
-  async remove(id: number) {
-    return await this.reportRepository.softDelete(id);
+async remove(id: number) {
+  const result = await this.reportRepository.softDelete(id);
+  if (result.affected === 0) {
+    throw new NotFoundException(`Report with ID ${id} not found.`);
   }
-  
+}
+
 }
