@@ -30,9 +30,6 @@ export abstract class User {
     @DeleteDateColumn()
     deleteAt: Date;
 
-    @ManyToOne(() => Supervisor, supervisor => supervisor.users)
-    supervisor: Supervisor;
-
     @OneToMany(() => Report, reports => reports.user)
     reports: Report[];
 
