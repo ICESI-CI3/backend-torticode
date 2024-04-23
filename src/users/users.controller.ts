@@ -8,6 +8,7 @@ import { CreateSupervisorDto } from 'src/roles/dto/create-supervisor.dto';
 import { UpdateStudentDto } from 'src/roles/dto/update-student.dto';
 import { UpdateRestaurantDto } from 'src/roles/dto/update-restaurant.dto';
 import { UpdateSupervisorDto } from 'src/roles/dto/update-supervisor.dto';
+import { Role } from 'src/roles/enum/role.enum';
 
 @Controller('users')
 export class UsersController {
@@ -58,4 +59,21 @@ export class UsersController {
   remove(@Param('id') id: number) {
     return this.usersService.remove(id);
   }
+
+  @Patch('balance/:id')
+  updateBalance(@Param('id') id: number, @Body('amount') amount: number) {
+    return this.usersService.updateBalance(id, amount);
+  }
+
+  @Patch('role/:id')
+  updateRole(@Param('id') id: number, @Body('role') role: Role) {
+    return this.usersService.updateRole(id, role);
+  }
+
+  @Get('role/:role')
+  findUserByRole(@Param('role') role: Role) {
+    return this.usersService.findUserByRole(role);
+  }
+
+  
 }

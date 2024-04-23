@@ -63,4 +63,21 @@ export class UsersService {
   async remove(id: number) {
     return await this.userRepository.softDelete(id);
   }
+
+  async updateBalance(id: number, amount: number) {
+    const user = await this.userRepository.findOne({where: {id : id}});
+    user.balance += amount;
+    return await this.userRepository.save(user);
+  }
+
+  async updateRole(id: number, role: Role) {
+    const user = await this.userRepository.findOne({where: {id : id}});
+    user.role = role;
+    return await this.userRepository.save(user);
+  }
+
+  async findUserByRole(role: Role) {  
+    return await this.userRepository.find({where: {role: role}});
+  }
+
 }

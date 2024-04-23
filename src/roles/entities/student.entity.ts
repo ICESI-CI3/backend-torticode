@@ -23,9 +23,6 @@ export class Student extends User{
     @OneToMany(() => Sale, sales=>sales.student)
     sales: Sale[];
 
-    @OneToMany(() => Report, report => report.student)
-    reports: Report[];
-
     constructor() {
         super();
         this.role = 'student';
