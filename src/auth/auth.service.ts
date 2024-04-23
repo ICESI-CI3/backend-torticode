@@ -61,11 +61,18 @@ export class AuthService {
             throw new UnauthorizedException('Email or password is wrong')
         }
 
-        const payload = {email: user.email}; //
+        const payload = {email: user.email, role:user.role}; //
         const token = await this.jwtService.signAsync(payload)
         return {
             token,
             email,
         }
+    }
+
+    async profile({email, role}: {email:string; role:string;}) {
+
+        if (role) 
+            
+        return await this.usersService.findOneByEmail(email);
     }
 }
