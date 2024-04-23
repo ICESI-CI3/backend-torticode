@@ -8,9 +8,11 @@ import { Student } from 'src/roles/entities/student.entity';
 import { Supervisor } from 'src/roles/entities/supervisor.entity';
 
 
+
 @Module({
   imports: [TypeOrmModule.forFeature([User, Restaurant, Student, Supervisor])],
   controllers: [UsersController],
   providers: [UsersService],
+  exports: [UsersService],
 })
 export class UsersModule {}

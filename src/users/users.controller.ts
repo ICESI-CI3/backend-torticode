@@ -9,6 +9,7 @@ import { UpdateStudentDto } from 'src/roles/dto/update-student.dto';
 import { UpdateRestaurantDto } from 'src/roles/dto/update-restaurant.dto';
 import { UpdateSupervisorDto } from 'src/roles/dto/update-supervisor.dto';
 import { Role } from 'src/roles/enum/role.enum';
+import { User } from './entities/user.entity';
 
 @Controller('users')
 export class UsersController {
@@ -60,6 +61,11 @@ export class UsersController {
     return this.usersService.remove(id);
   }
 
+  @Get('/by-role/:role')
+  async findByRole(@Param('role') role: Role): Promise<User[]> {
+    return await this.usersService.findByRole(role);
+  }
+
   @Patch('balance/:id')
   updateBalance(@Param('id') id: number, @Body('amount') amount: number) {
     return this.usersService.updateBalance(id, amount);
@@ -69,11 +75,5 @@ export class UsersController {
   updateRole(@Param('id') id: number, @Body('role') role: Role) {
     return this.usersService.updateRole(id, role);
   }
-
-  @Get('role/:role')
-  findUserByRole(@Param('role') role: Role) {
-    return this.usersService.findUserByRole(role);
-  }
-
   
 }
