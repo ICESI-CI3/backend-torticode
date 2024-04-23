@@ -41,7 +41,7 @@ export class SalesService {
       throw new NotFoundException('Student no found.');
     }
     
-    sale.restaurant = restaurant
+    sale.restaurant = restaurant //Cambiará con la autorizacion
     sale.student = student
     sale.status = Status.PENDING;
 
