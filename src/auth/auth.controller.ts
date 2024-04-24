@@ -26,6 +26,7 @@ export class AuthController {
         return this.authService.login(loginDto);
     }
 
+    @Auth(Role.SUPERVISOR)
     @Post('register')
     register(
     @Body()
@@ -44,6 +45,8 @@ export class AuthController {
       console.log(user)
       return this.authService.profile(user);
     }
+
+    //FALTA CERRAR SESION
   }
 
 

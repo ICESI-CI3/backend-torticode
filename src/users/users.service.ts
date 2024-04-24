@@ -54,12 +54,17 @@ export class UsersService {
   }
 
   async findOne(id: number): Promise<User> {
-    const user = await this.userRepository.findOne({ where: { id }});
+    let user = await this.userRepository.findOne({ where: { id }});
     if (!user) {
       throw new NotFoundException(`User with ID ${id} not found.`);
     }
+
+    if (user.role === Role.RESTAURANT) {
+      user= await this.userRepository.findOne({ where: { id }, relations: ['news', 'products']})
+    }
     return user;
   }
+  
   async update(id: number, updateUserDto: UpdateUserDto | UpdateStudentDto | UpdateRestaurantDto) {
     
     return await this.userRepository.update(id,updateUserDto);
