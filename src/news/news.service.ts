@@ -92,7 +92,6 @@ export class NewsService {
       if(!existNew){
         //const newNews = this.newsRepository.create(neww);
         await this.newsRepository.save(neww);
-        
       }
     }
   }
