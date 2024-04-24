@@ -1,15 +1,15 @@
 import { IsNotEmpty, IsString } from 'class-validator';
 
 export class CreateNewsDto {
-    @IsNotEmpty()
-    @IsString()
+    @IsNotEmpty({message: 'Title is required'})
+    @IsString({message: 'Title must be a string'})
     title: string;
 
-    @IsNotEmpty()
-    @IsString()
+    @IsNotEmpty({message: 'Description is required'})
+    @IsString({message: 'Description must be a string'})
     description: string;
 
-    @IsNotEmpty()
-    @IsString()
+    @IsNotEmpty({message: 'image path is required'})
+    @IsString({message: 'image path must be a string. Path must be valid.'})
     image: string;
 }

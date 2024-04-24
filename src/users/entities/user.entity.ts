@@ -1,5 +1,5 @@
 import { Role } from "src/roles/enum/role.enum";
-import { Column, DeleteDateColumn, Entity, PrimaryGeneratedColumn, Table, TableInheritance, OneToMany, ManyToOne} from "typeorm";
+import { Column, DeleteDateColumn, Entity, PrimaryGeneratedColumn, Table, TableInheritance, OneToMany, ManyToOne, CreateDateColumn} from "typeorm";
 import { Supervisor } from "src/roles/entities/supervisor.entity";
 import { Report } from "src/reports/entities/report.entity";
 
@@ -23,8 +23,8 @@ export abstract class User {
     @Column({type: 'enum', default:Role.SUPERVISOR, enum: Role})
     role:string;
 
-    @Column('timestamp', 
-            {nullable: false, default: () => 'CURRENT_TIMESTAMP'})
+    @Column({ type: 'bigint', nullable: false })
+    
     createdAt: number;
 
     @DeleteDateColumn()

@@ -109,4 +109,44 @@ export class UsersService {
       select: ['id', 'email', 'password', 'role'],
     });
   }
+
+  async isTableEmpty(): Promise<boolean> {
+    const count = await this.userRepository.count();
+    return count === 0;
+  }
+
+  async fillSupervisorWithSeedData(supervisor: Supervisor){
+    const user = await this.userRepository.findOne({where:{id: supervisor.id}});
+    if(!user){
+      //console.log("entre acá también")
+      //const supervisorUser = this.userRepository.create(supervisor);
+      return await this.userRepository.save(supervisor);
+    }
+
+  }
+  async fillStudentWithSeedData(students: Student[]){
+    for(let student of students){
+      let user = await this.userRepository.findOne({where:{id: student.id}});
+      if(!user){
+        //const studentUser = this.userRepository.create(student);
+        console.log("en student")
+        return await this.userRepository.save(student);
+
+      }
+
+    }
+  }
+  async fillRestaurantWithSeedData(restaurants: Restaurant[]){
+    for(let restaurant of restaurants){
+      let user = await this.userRepository.findOne({where:{id: restaurant.id}});
+      if(!user){
+        console.log("en restaurant")
+        //const restaurantUser = this.userRepository.create(restaurant);
+        return await this.userRepository.save(restaurant);
+
+      }
+
+    }
+  }
+
 }
