@@ -7,7 +7,7 @@ import { Role } from 'src/roles/enum/role.enum';
 import { ActiveUser } from 'src/common/decorators/active-user.decorators';
 
 
-@Auth(Role.RESTAURANT)
+
 @Controller('products')
 export class ProductsController {
   constructor(private readonly productsService: ProductsService) {}
@@ -17,6 +17,7 @@ export class ProductsController {
     return this.productsService.create(+userId, createProductDto);
   }
   */ 
+  @Auth(Role.RESTAURANT)
   @Post()
   create(@ActiveUser() user: any, @Body() createProductDto: CreateProductDto) {
     // Suponiendo que el ID del restaurante está en user.restaurantId o similar.
@@ -24,27 +25,29 @@ export class ProductsController {
     return this.productsService.create(user, createProductDto);
   }
   
+  
   @Get()
   findAll() {
     return this.productsService.findAll();
   }
 
+  
   @Get(':id')
   findOne(@Param('id') id: number) {
     return this.productsService.findOne(id);
   }
-
+  @Auth(Role.RESTAURANT)
   @Patch(':id')
   update(@Param('id') id: number, @Body() updateProductDto: UpdateProductDto) {
     return this.productsService.update(+id, updateProductDto);
   }
-
+  @Auth(Role.RESTAURANT)
   @Delete(':id')
   remove(@Param('id') id: number) {
     return this.productsService.remove(id);
   }
 
-  @Get('restaurant/:restaurantId')
+  @Get('restaurant-products/:restaurantId')
   findByRestaurant(@Param('restaurantId') restaurantId: number) {
     return this.productsService.findByRestaurant(restaurantId);
   }
