@@ -24,10 +24,12 @@ export class Sale {
     @ManyToMany(() => Report, reports => reports.sales)
     reports: Report[];
 
-    @Column('decimal', { precision: 12, scale: 2, default: 0 })
+    /*@Column('decimal', { precision: 12, scale: 2, default: 0 })
     get totalValue(): number {
         return this.saleDetails.reduce((acc, detail) => acc + detail.subtotal, 0);
-    }
+    }*/
+    @Column({default: 0})
+    totalValue: number;
 
     @Column({type: 'enum', enum: Status})
     status:string;

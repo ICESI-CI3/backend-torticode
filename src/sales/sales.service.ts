@@ -2,7 +2,7 @@ import { BadRequestException, Injectable, NotFoundException } from '@nestjs/comm
 import { CreateSaleDto } from './dto/create-sale.dto';
 import { UpdateSaleDto } from './dto/update-sale.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { ConnectionClosedEvent, Repository } from 'typeorm';
 import { Sale } from './entities/sale.entity';
 import { SaleDetail } from 'src/sale-details/entities/sale-detail.entity';
 import { Student } from 'src/roles/entities/student.entity';
@@ -10,6 +10,8 @@ import { Restaurant } from 'src/roles/entities/restaurant.entity';
 import { Status } from './enum/status.enum';
 import { CreateSaleDetailDto } from 'src/sale-details/dto/create-sale-detail.dto';
 import { Product } from 'src/products/entities/product.entity';
+import { toSaleDTO } from './sales.utils';
+import { ResponseSaleDto } from './dto/response-sale.dto';
 
 @Injectable()
 export class SalesService {
@@ -25,31 +27,34 @@ export class SalesService {
     @InjectRepository(Product)
     private productRepository: Repository<Product>,
   ) {}
-
-  async create(createSaleDto: CreateSaleDto): Promise<Sale> {
+  
+  async create(createSaleDto: CreateSaleDto): Promise<ResponseSaleDto> {
     const { restaurantId, studentId, saleDetails } = createSaleDto;
     const restaurant = await this.restaurantRepository.findOne({where:{id:restaurantId}});
     const student = await this.studentRepository.findOne({where:{id:studentId}})
     const sale = new Sale();
-
+    
+ 
     if (!restaurant) {
-      await this.saleRepository.save(sale)
+      
       throw new NotFoundException('Restaurant no found.');
     }
     if (!student) {
-      await this.saleRepository.save(sale)
+      
       throw new NotFoundException('Student no found.');
     }
     
     sale.restaurant = restaurant //Cambiará con la autorizacion
     sale.student = student
     sale.status = Status.PENDING;
+    
 
     let totalValue = 0;
-    try{
+    
        const details = saleDetails.map(async detail => {
         const saleDetail = new SaleDetail();
         const product = await this.productRepository.findOne({where:{id:detail.productId}});
+        
         if(!product){
           sale.status=Status.FAILED;
           throw new NotFoundException('Product with id: ' + detail.productId + ' not found.');
@@ -60,9 +65,10 @@ export class SalesService {
         totalValue += saleDetail.subtotal; // sum up the total
         return saleDetail;
     });
-
+    
     sale.saleDetails = await Promise.all(details);
-
+    sale.totalValue =totalValue;
+    
     if (student.balance < totalValue) {
       sale.status = Status.FAILED;
       throw new BadRequestException('balance is not enough to complete the purchase.');
@@ -72,18 +78,15 @@ export class SalesService {
     student.balance -= totalValue;
     restaurant.balance += totalValue;
     sale.status = Status.COMPLETED;
-
-    }catch(err){
-      sale.status = Status.FAILED;
-      await this.saleRepository.save(sale);
-      throw new BadRequestException("Error processing sale. Sale has been cancelled.");
-    }
+    
     
     this.studentRepository.save(student);
     this.restaurantRepository.save(restaurant);
-    this.saleDetailRepository.save(sale.saleDetails);
+    
 
-    return this.saleRepository.save(sale);
+    const savedSale = await this.saleRepository.save(sale); 
+    this.saleDetailRepository.save(savedSale.saleDetails);
+    return await toSaleDTO(savedSale);
   }
 
   async findAll(): Promise<Sale[]> {
