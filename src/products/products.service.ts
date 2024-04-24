@@ -134,4 +134,20 @@ export class ProductsService {
       relations: ['restaurant']
     });
   }
+
+  async fillProductWithSeedData(productSeed: Product[]){
+    for(let product of productSeed){
+      const productExists = await this.productRepository.findOne({
+        where: {
+          name: product.name,
+          restaurant: { id: product.restaurant.id }
+        }
+      });
+      if (!productExists) {
+        const newProduct = this.productRepository.create(product);
+        await this.productRepository.save(newProduct);
+      }
+    }
+
+  }
 }
