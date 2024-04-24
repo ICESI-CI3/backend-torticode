@@ -12,21 +12,22 @@ import { Role } from 'src/roles/enum/role.enum';
 import { User } from './entities/user.entity';
 import { Auth } from 'src/auth/decorators/auth.decorators';
 
-@Auth(Role.SUPERVISOR)
+
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
+  @Auth(Role.SUPERVISOR)
   @Post('restaurant')
   createRestaurant(@Body() createRestaurantDto: CreateRestaurantDto) {
     return this.usersService.create(createRestaurantDto);
   }
-  
+  @Auth(Role.SUPERVISOR)
   @Post('student')
   createStudent(@Body() createStudentDto: CreateStudentDto) {
     return this.usersService.create(createStudentDto);
   }
-
+  @Auth(Role.SUPERVISOR)
   @Post('supervisor')
   createSupervisor(@Body() createSupervisorDto: CreateSupervisorDto) {
     return this.usersService.create(createSupervisorDto);
@@ -72,7 +73,7 @@ export class UsersController {
   updateBalance(@Param('id') id: number, @Body('amount') amount: number) {
     return this.usersService.updateBalance(id, amount);
   }
-
+  @Auth(Role.SUPERVISOR)
   @Patch('role/:id')
   updateRole(@Param('id') id: number, @Body('role') role: Role) {
     return this.usersService.updateRole(id, role);
