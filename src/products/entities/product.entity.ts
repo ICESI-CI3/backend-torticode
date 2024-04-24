@@ -1,7 +1,7 @@
 import { Column, DeleteDateColumn, Entity, PrimaryGeneratedColumn, OneToMany, ManyToMany, ManyToOne } from 'typeorm';
 import { Sale } from '../../sales/entities/sale.entity';
-import { SaleDetail } from 'src/sale-details/entities/sale-detail.entity';
-import { Restaurant } from 'src/roles/entities/restaurant.entity';
+import { SaleDetail } from '../../sale-details/entities/sale-detail.entity';
+import { Restaurant } from '../../roles/entities/restaurant.entity';
 
 @Entity('products')
 export class Product {

@@ -1,11 +1,11 @@
 import { Column, DeleteDateColumn, Entity, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { User } from '../../users/entities/user.entity';
-import { SaleDetail } from 'src/sale-details/entities/sale-detail.entity';
+import { SaleDetail } from '../../sale-details/entities/sale-detail.entity';
 import { Res } from '@nestjs/common';
-import { Restaurant } from 'src/roles/entities/restaurant.entity';
-import { Student } from 'src/roles/entities/student.entity';
+import { Restaurant } from '../../roles/entities/restaurant.entity';
+import { Student } from '../../roles/entities/student.entity';
 import { Status } from '../enum/status.enum';
-import { Report } from 'src/reports/entities/report.entity';
+import { Report } from '../../reports/entities/report.entity';
 
 @Entity()
 export class Sale {

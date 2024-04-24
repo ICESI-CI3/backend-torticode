@@ -1,7 +1,7 @@
 import { Entity, Column, ChildEntity, OneToMany, ManyToOne } from 'typeorm';
 import { User } from '../../users/entities/user.entity';
-import { Sale } from 'src/sales/entities/sale.entity';
-import { Report } from 'src/reports/entities/report.entity';
+import { Sale } from '../../sales/entities/sale.entity';
+import { Report } from '../../reports/entities/report.entity';
 import { Supervisor } from './supervisor.entity';
 
 @ChildEntity('student')
