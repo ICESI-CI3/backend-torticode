@@ -125,7 +125,25 @@ export class UsersService {
 
   }
   async fillStudentWithSeedData(students: Student[]){
-    
+    for(let student of students){
+      const user = await this.userRepository.findOne({where:{id: student.id}});
+      if(!user){
+        //const studentUser = this.userRepository.create(student);
+        return await this.userRepository.save(student);
+      }
+
+    }
+  }
+
+  async fillRestaurantWithSeedData(restaurants: Restaurant[]){
+    for(let restaurant of restaurants){
+      const user = await this.userRepository.findOne({where:{id: restaurant.id}});
+      if(!user){
+        //const restaurantUser = this.userRepository.create(restaurant);
+        return await this.userRepository.save(restaurant);
+      }
+
+    }
   }
 
 }

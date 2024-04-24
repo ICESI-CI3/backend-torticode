@@ -23,8 +23,7 @@ export abstract class User {
     @Column({type: 'enum', default:Role.SUPERVISOR, enum: Role})
     role:string;
 
-    @Column('timestamp', 
-            {nullable: false, default: () => 'CURRENT_TIMESTAMP'})
+    @Column({ type: 'bigint', nullable: false })
     
     createdAt: number;
 

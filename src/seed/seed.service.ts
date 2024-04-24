@@ -11,6 +11,7 @@ export class SeedService implements OnModuleInit{
     async onModuleInit(): Promise<void> {
         try {
           await this.populateDB();
+          
         } catch (error) {
           console.error('Failed to seed data:', error);
         }
@@ -20,6 +21,7 @@ export class SeedService implements OnModuleInit{
         if (await this.usersService.isTableEmpty()) {
           console.log('Populating DB with seed data');
           await this.usersService.fillSupervisorWithSeedData(finalSupervisor);
+          await this.usersService.fillRestaurantWithSeedData(finalSupervisor.restaurants);
           console.log(await this.usersService.isTableEmpty()); // Now this will properly wait for the promise to resolve
         } else {
           console.log('DB already populated');
