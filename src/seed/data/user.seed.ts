@@ -1,6 +1,10 @@
+import { New } from "src/news/entities/new.entity";
+import { Product } from "src/products/entities/product.entity";
 import { Restaurant } from "src/roles/entities/restaurant.entity";
 import { Student } from "src/roles/entities/student.entity";
 import { Supervisor } from "src/roles/entities/supervisor.entity";
+import { SaleDetail } from "src/sale-details/entities/sale-detail.entity";
+import { Sale } from "src/sales/entities/sale.entity";
 
 const supervisor:Supervisor = new Supervisor();
 supervisor.id=1
@@ -77,4 +81,59 @@ const restaurantSeed: Restaurant[] = [
 
 supervisor.restaurants=restaurantSeed
 
+const products: Product[] = [
+    {
+        id:1,
+        name:"Almuerzo del día",
+        description:"Arroz, carne, ensalada",
+        price: 10000,
+        stock: 100,
+        image: "https://images.pexels.com/photos/3690/food-restaurant-hand-dinner.jpg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
+        createdAt: new Date().getTime(),
+        deletedAt: null,
+        saleDetails: null,
+        restaurant: restaurantSeed[0]
+    },
+    {
+        id:2,
+        name:"Helado nucita",
+        description:"Helado de nucita",
+        price: 2000,
+        stock: 50,
+        image:"https://images.pexels.com/photos/1233258/pexels-photo-1233258.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
+        createdAt: new Date().getTime(),
+        deletedAt: null,
+        saleDetails: null,
+        restaurant: restaurantSeed[0]
+    }
+]
+
+restaurantSeed[0].products=products
+
+const news:New[]=[
+    {
+        id:1,
+        title:"Nuevo plato del día",
+        description:"Hoy tenemos un nuevo plato del día",
+        image:"https://images.pexels.com/photos/3184183/pexels-photo-3184183.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
+        createdAt: new Date().getTime(),
+        deletedAt: null,
+        restaurant: restaurantSeed[0]
+    },
+    {
+        id:2,
+        title:"Nuevo postre",
+        description:"Hoy tenemos un nuevo postre",
+        image:"https://images.pexels.com/photos/1126359/pexels-photo-1126359.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
+        createdAt: new Date().getTime(),
+        deletedAt: null,
+        restaurant: restaurantSeed[0]
+    }
+]
+
+restaurantSeed[0].news=news
+
+const finalSupervisor = supervisor; 
+
+export{finalSupervisor, studentSeed, restaurantSeed, products, news};
 
