@@ -3,15 +3,18 @@ import { Product } from "src/products/entities/product.entity";
 import { Restaurant } from "src/roles/entities/restaurant.entity";
 import { Student } from "src/roles/entities/student.entity";
 import { Supervisor } from "src/roles/entities/supervisor.entity";
+import { Role } from "src/roles/enum/role.enum";
 import { SaleDetail } from "src/sale-details/entities/sale-detail.entity";
+import * as bcryptjs from 'bcryptjs';
 import { Sale } from "src/sales/entities/sale.entity";
 
 const supervisor:Supervisor = new Supervisor();
 supervisor.id=1
 supervisor.email= 'supervisor@gmail.com'
-supervisor.password= 'Supervisor1'
+//Supervisor1
+supervisor.password= '$2b$10$VqUKHZK/fAGX/B6qppXUsO2.ORekP6xAULHr6E3hUgdz4.yEYmQrC'
 supervisor.balance=50000
-supervisor.role='supervisor'
+supervisor.role= Role.SUPERVISOR
 supervisor.createdAt= new Date().getTime()
 supervisor.deleteAt= null
 supervisor.reports= []
@@ -23,9 +26,9 @@ const studentSeed:Student[] = [
     {
         id:12,
         email: 'juanaperez@gmail.com',
-        password: 'Juanaperez1',
+        password: '$2b$10$VqUKHZK/fAGX/B6qppXUsO2.ORekP6xAULHr6E3hUgdz4.yEYmQrC',
         balance:50000,
-        role:'student',
+        role: Role.STUDENT,
         createdAt: new Date().getTime(),
         deleteAt: null,
         reports: [],
@@ -46,9 +49,9 @@ const restaurantSeed: Restaurant[] = [
     {
         id:21,
         email: 'restauranteBristo@gmail.com',
-        password: 'BristoRestaurante1',
+        password: '$2b$10$VqUKHZK/fAGX/B6qppXUsO2.ORekP6xAULHr6E3hUgdz4.yEYmQrC',
         balance:50000,
-        role:'restaurant',
+        role:Role.RESTAURANT,
         createdAt: new Date().getTime(),
         deleteAt: null,
         reports: [],

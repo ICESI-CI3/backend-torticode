@@ -7,6 +7,8 @@ import { NotFoundException } from '@nestjs/common';
 import { Restaurant } from  '../roles/entities/restaurant.entity';
 import { Student } from '../roles/entities/student.entity';
 import { Supervisor } from '../roles/entities/supervisor.entity'; 
+import { UsersService } from 'src/users/users.service';
+
 
 describe('NewsService', () => {
   let service: NewsService;
@@ -47,13 +49,11 @@ describe('NewsService', () => {
     expect(service).toBeDefined();
   });
 
-  describe('create', () => {
-    it('should successfully create a news item', async () => {
-      const newsDto = { title: 'New Title', description: 'New Description', image: 'new.jpg' };
-      expect(await service.create({email: "example@example.com"}, newsDto)).toEqual(newsDto);
-    });
+  it('should successfully create a news item', async () => {
+    const newsDto = { title: 'New Title', description: 'New Description', image: 'new.jpg' };
+    const result = await service.create({email: "example@example.com"}, newsDto);
+    expect(result).toEqual(newsDto);
   });
-
   describe('findAll', () => {
     it('should return an array of news', async () => {
       expect(await service.findAll()).toEqual([]);
