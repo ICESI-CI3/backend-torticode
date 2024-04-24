@@ -118,7 +118,7 @@ export class UsersService {
   async fillSupervisorWithSeedData(supervisor: Supervisor){
     const user = await this.userRepository.findOne({where:{id: supervisor.id}});
     if(!user){
-      console.log("entre acá también")
+      //console.log("entre acá también")
       //const supervisorUser = this.userRepository.create(supervisor);
       return await this.userRepository.save(supervisor);
     }
@@ -126,21 +126,24 @@ export class UsersService {
   }
   async fillStudentWithSeedData(students: Student[]){
     for(let student of students){
-      const user = await this.userRepository.findOne({where:{id: student.id}});
+      let user = await this.userRepository.findOne({where:{id: student.id}});
       if(!user){
         //const studentUser = this.userRepository.create(student);
+        console.log("en student")
         return await this.userRepository.save(student);
+
       }
 
     }
   }
-
   async fillRestaurantWithSeedData(restaurants: Restaurant[]){
     for(let restaurant of restaurants){
-      const user = await this.userRepository.findOne({where:{id: restaurant.id}});
+      let user = await this.userRepository.findOne({where:{id: restaurant.id}});
       if(!user){
+        console.log("en restaurant")
         //const restaurantUser = this.userRepository.create(restaurant);
         return await this.userRepository.save(restaurant);
+
       }
 
     }

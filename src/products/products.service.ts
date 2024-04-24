@@ -132,20 +132,24 @@ export class ProductsService {
     return await this.productRepository.find({
       where: { restaurant: { id: restaurantId } },
       relations: ['restaurant']
+
     });
   }
 
   async fillProductWithSeedData(productSeed: Product[]){
     for(let product of productSeed){
-      const productExists = await this.productRepository.findOne({
+      
+      let productExists = await this.productRepository.findOne({
         where: {
           name: product.name,
           restaurant: { id: product.restaurant.id }
         }
       });
       if (!productExists) {
-        const newProduct = this.productRepository.create(product);
-        await this.productRepository.save(newProduct);
+        console.log("en products")
+        //const newProduct = this.productRepository.create(product);
+        await this.productRepository.save(product);
+        
       }
     }
 

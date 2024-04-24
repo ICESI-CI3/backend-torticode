@@ -36,26 +36,10 @@ const studentSeed:Student[] = [
         program: "Ing. de Sistemas",
         sales: [],
         supervisor: supervisor
-    },
-    {
-        id:13,
-        email: 'diegomartinez@gmail.com',
-        password: 'Diegomartinez1',
-        balance:50000,
-        role:'student',
-        createdAt: new Date().getTime(),
-        deleteAt: null,
-        reports: [],
-        name: "Diego",
-        lastname: "Martinez",
-        dni:11334455,
-        code: "A00377777",
-        program: "Ing. de Sistemas",
-        sales: [],
-        supervisor: supervisor
-    },    
+    }
 ]
 supervisor.students=studentSeed
+
 
 const restaurantSeed: Restaurant[] = [
 
@@ -81,7 +65,7 @@ const restaurantSeed: Restaurant[] = [
 
 supervisor.restaurants=restaurantSeed
 
-const products: Product[] = [
+const productsSeed: Product[] = [
     {
         id:1,
         name:"Almuerzo del día",
@@ -108,7 +92,7 @@ const products: Product[] = [
     }
 ]
 
-restaurantSeed[0].products=products
+restaurantSeed[0].products=productsSeed
 
 const news:New[]=[
     {
@@ -135,5 +119,5 @@ restaurantSeed[0].news=news
 
 const finalSupervisor = supervisor; 
 
-export{finalSupervisor, studentSeed, restaurantSeed, products, news};
+export{finalSupervisor, studentSeed, restaurantSeed, productsSeed, news};
 

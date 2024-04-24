@@ -84,4 +84,17 @@ export class NewsService {
     return news;
   }
 
+  async fillNewsWithSeedData(news: New[]) {
+    
+    for(let neww of news){
+      const existNew = await this.newsRepository.findOne(
+        {where:{id:neww.id,restaurant:{id:neww.restaurant.id}}});
+      if(!existNew){
+        //const newNews = this.newsRepository.create(neww);
+        await this.newsRepository.save(neww);
+        
+      }
+    }
+  }
+
 }
