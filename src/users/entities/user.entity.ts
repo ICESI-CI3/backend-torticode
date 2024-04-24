@@ -1,7 +1,7 @@
-import { Role } from "src/roles/enum/role.enum";
+import { Role } from "../../roles/enum/role.enum";
 import { Column, DeleteDateColumn, Entity, PrimaryGeneratedColumn, Table, TableInheritance, OneToMany, ManyToOne} from "typeorm";
-import { Supervisor } from "src/roles/entities/supervisor.entity";
-import { Report } from "src/reports/entities/report.entity";
+import { Supervisor } from "../../roles/entities/supervisor.entity";
+import { Report } from "../../reports/entities/report.entity";
 
 
 @Entity('users')
