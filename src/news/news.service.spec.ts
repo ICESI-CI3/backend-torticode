@@ -4,7 +4,7 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 import { New } from './entities/new.entity';
 import { Repository } from 'typeorm';
 import { NotFoundException } from '@nestjs/common';
-import { Restaurant } from '../roles/entities/restaurant.entity';
+import { Restaurant } from  '../roles/entities/restaurant.entity';
 import { Student } from '../roles/entities/student.entity';
 import { Supervisor } from '../roles/entities/supervisor.entity'; 
 
