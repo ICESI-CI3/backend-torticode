@@ -1,19 +1,18 @@
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
-import { CreateRestaurantDto } from 'src/roles/dto/create-restaurant.dto';
-import{ CreateStudentDto } from 'src/roles/dto/create-student.dto';
+import { CreateRestaurantDto } from '../roles/dto/create-restaurant.dto';
+import { CreateStudentDto } from '../roles/dto/create-student.dto';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
-import { Restaurant } from 'src/roles/entities/restaurant.entity';
-import { Student } from 'src/roles/entities/student.entity';
+import { Restaurant } from '../roles/entities/restaurant.entity';
+import { Student } from '../roles/entities/student.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Role } from 'src/roles/enum/role.enum';
-import { UpdateStudentDto } from 'src/roles/dto/update-student.dto';
-import { UpdateRestaurantDto } from 'src/roles/dto/update-restaurant.dto';
-import { CreateSupervisorDto } from 'src/roles/dto/create-supervisor.dto';
-import { Supervisor } from 'src/roles/entities/supervisor.entity';
-
+import { Role } from '../roles/enum/role.enum';
+import { UpdateStudentDto } from '../roles/dto/update-student.dto';
+import { UpdateRestaurantDto } from '../roles/dto/update-restaurant.dto';
+import { CreateSupervisorDto } from '../roles/dto/create-supervisor.dto';
+import { Supervisor } from '../roles/entities/supervisor.entity';
 
 @Injectable()
 export class UsersService {
@@ -28,7 +27,6 @@ export class UsersService {
     private supervisorRepository: Repository<Supervisor>
   ) {}
 
-  
   async create(createUserDto: CreateSupervisorDto | CreateRestaurantDto | CreateStudentDto): Promise<User> {
     const { email, password, ...rest } = createUserDto;
     
@@ -66,8 +64,7 @@ export class UsersService {
   }
   
   async update(id: number, updateUserDto: UpdateUserDto | UpdateStudentDto | UpdateRestaurantDto) {
-    
-    return await this.userRepository.update(id,updateUserDto);
+    return await this.userRepository.update(id, updateUserDto);
   }
 
   async remove(id: number): Promise<void> {

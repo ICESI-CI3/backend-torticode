@@ -1,16 +1,14 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
-import { CreateRestaurantDto } from 'src/roles/dto/create-restaurant.dto';
-import { CreateStudentDto } from 'src/roles/dto/create-student.dto'; 
-import { CreateSupervisorDto } from 'src/roles/dto/create-supervisor.dto';
-import { UpdateStudentDto } from 'src/roles/dto/update-student.dto';
-import { UpdateRestaurantDto } from 'src/roles/dto/update-restaurant.dto';
-import { UpdateSupervisorDto } from 'src/roles/dto/update-supervisor.dto';
-import { Role } from 'src/roles/enum/role.enum';
+import { CreateRestaurantDto } from '../roles/dto/create-restaurant.dto';
+import { CreateStudentDto } from '../roles/dto/create-student.dto'; 
+import { CreateSupervisorDto } from '../roles/dto/create-supervisor.dto';
+import { UpdateStudentDto } from '../roles/dto/update-student.dto';
+import { UpdateRestaurantDto } from '../roles/dto/update-restaurant.dto';
+import { UpdateSupervisorDto } from '../roles/dto/update-supervisor.dto';
+import { Role } from '../roles/enum/role.enum';
 import { User } from './entities/user.entity';
-import { Auth } from 'src/auth/decorators/auth.decorators';
+import { Auth } from '../auth/decorators/auth.decorators';
 
 
 @Controller('users')
