@@ -6,7 +6,7 @@ import { ResponseSaleDto } from './dto/response-sale.dto';
 export function toSaleDTO(sale: Sale): ResponseSaleDto {
     return {
         id: sale.id,
-        restaurantId: sale.restaurant.id,
+        restaurantId: sale.restaurantId,
         studentId: sale.student.id,
         totalValue: sale.totalValue,
         saleDetails: sale.saleDetails.map(toSaleDetailDTO)

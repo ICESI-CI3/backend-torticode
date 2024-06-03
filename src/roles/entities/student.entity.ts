@@ -1,34 +1,29 @@
-import { Entity, Column, ChildEntity, OneToMany, ManyToOne } from 'typeorm';
+import { Column, ChildEntity, OneToMany } from 'typeorm';
 import { User } from '../../users/entities/user.entity';
 import { Sale } from '../../sales/entities/sale.entity';
-import { Report } from '../../reports/entities/report.entity';
-import { Supervisor } from './supervisor.entity';
 
 @ChildEntity('student')
-export class Student extends User{
-    @Column()
-    name: string;
+export class Student extends User {
+  @Column()
+  name: string;
 
-    @Column()
-    lastname: string;
-    
-    @Column()
-    dni: number;
+  @Column()
+  lastname: string;
 
-    @Column()
-    code: string;
+  @Column()
+  dni: number;
 
-    @Column()
-    program:string;
+  @Column()
+  code: string;
 
-    @OneToMany(() => Sale, sales=>sales.student)
-    sales: Sale[];
+  @Column()
+  program: string;
 
-    @ManyToOne(() => Supervisor, supervisor => supervisor.students)
-    supervisor: Supervisor;
+  @OneToMany(() => Sale, sales => sales.student)
+  sales: Sale[];
 
-    constructor() {
-        super();
-        this.role = 'student';
-    }
+  constructor() {
+    super();
+    this.role = 'student';
+  }
 }

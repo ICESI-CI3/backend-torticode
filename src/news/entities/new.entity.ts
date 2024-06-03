@@ -1,6 +1,5 @@
 import { Column, DeleteDateColumn, Entity, PrimaryGeneratedColumn , ManyToOne} from 'typeorm';
-import { User } from '../../users/entities/user.entity';
-import { Restaurant } from '../../roles/entities/restaurant.entity';
+import { Restaurant } from 'src/roles/entities/restaurant.entity';
 @Entity('news')
 export class New {
 

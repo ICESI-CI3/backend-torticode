@@ -1,43 +1,34 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
-import { CreateRestaurantDto } from 'src/roles/dto/create-restaurant.dto';
-import { CreateStudentDto } from 'src/roles/dto/create-student.dto'; 
-import { CreateSupervisorDto } from 'src/roles/dto/create-supervisor.dto';
-import { UpdateStudentDto } from 'src/roles/dto/update-student.dto';
-import { UpdateRestaurantDto } from 'src/roles/dto/update-restaurant.dto';
-import { UpdateSupervisorDto } from 'src/roles/dto/update-supervisor.dto';
-import { Role } from 'src/roles/enum/role.enum';
+import { CreateRestaurantDto } from '../roles/dto/create-restaurant.dto';
+import { CreateStudentDto } from '../roles/dto/create-student.dto'; 
+import { CreateSupervisorDto } from '../roles/dto/create-supervisor.dto';
+import { UpdateStudentDto } from '../roles/dto/update-student.dto';
+import { UpdateRestaurantDto } from '../roles/dto/update-restaurant.dto';
+import { UpdateSupervisorDto } from '../roles/dto/update-supervisor.dto';
+import { Role } from '../roles/enum/role.enum';
 import { User } from './entities/user.entity';
-import { Auth } from 'src/auth/decorators/auth.decorators';
+import { Auth } from '../auth/decorators/auth.decorators';
 
 
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  @Auth(Role.SUPERVISOR)
   @Post('restaurant')
   createRestaurant(@Body() createRestaurantDto: CreateRestaurantDto) {
     return this.usersService.create(createRestaurantDto);
   }
-  @Auth(Role.SUPERVISOR)
+
   @Post('student')
   createStudent(@Body() createStudentDto: CreateStudentDto) {
     return this.usersService.create(createStudentDto);
-  }
-  @Auth(Role.SUPERVISOR)
-  @Post('supervisor')
-  createSupervisor(@Body() createSupervisorDto: CreateSupervisorDto) {
-    return this.usersService.create(createSupervisorDto);
   }
   
   @Get()
   findAll() {
     return this.usersService.findAll();
   }
-
   
   @Get(':id')
   findOne(@Param('id') id: number) {
@@ -54,11 +45,6 @@ export class UsersController {
     return this.usersService.update(id, updateUserDto);
   }
 
-  @Patch('supervisor/:id')
-  updateSupervisor(@Param('id') id: number, @Body() updateUserDto: UpdateSupervisorDto) {
-    return this.usersService.update(id, updateUserDto);
-  }
-
   @Delete(':id')
   remove(@Param('id') id: number) {
     return this.usersService.remove(id);
@@ -72,11 +58,6 @@ export class UsersController {
   @Patch('balance/:id')
   updateBalance(@Param('id') id: number, @Body('amount') amount: number) {
     return this.usersService.updateBalance(id, amount);
-  }
-  @Auth(Role.SUPERVISOR)
-  @Patch('role/:id')
-  updateRole(@Param('id') id: number, @Body('role') role: Role) {
-    return this.usersService.updateRole(id, role);
   }
   
 }

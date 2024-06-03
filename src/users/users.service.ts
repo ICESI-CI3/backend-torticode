@@ -1,19 +1,16 @@
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
-import { CreateRestaurantDto } from 'src/roles/dto/create-restaurant.dto';
-import{ CreateStudentDto } from 'src/roles/dto/create-student.dto';
+import { CreateRestaurantDto } from '../roles/dto/create-restaurant.dto';
+import { CreateStudentDto } from '../roles/dto/create-student.dto';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
-import { Restaurant } from 'src/roles/entities/restaurant.entity';
-import { Student } from 'src/roles/entities/student.entity';
+import { Restaurant } from '../roles/entities/restaurant.entity';
+import { Student } from '../roles/entities/student.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Role } from 'src/roles/enum/role.enum';
-import { UpdateStudentDto } from 'src/roles/dto/update-student.dto';
-import { UpdateRestaurantDto } from 'src/roles/dto/update-restaurant.dto';
-import { CreateSupervisorDto } from 'src/roles/dto/create-supervisor.dto';
-import { Supervisor } from 'src/roles/entities/supervisor.entity';
-
+import { Role } from '../roles/enum/role.enum';
+import { UpdateStudentDto } from '../roles/dto/update-student.dto';
+import { UpdateRestaurantDto } from '../roles/dto/update-restaurant.dto';
 
 @Injectable()
 export class UsersService {
@@ -24,12 +21,9 @@ export class UsersService {
     private restaurantRepository: Repository<Restaurant>,
     @InjectRepository(Student)
     private studentRepository: Repository<Student>,
-    @InjectRepository(Supervisor)
-    private supervisorRepository: Repository<Supervisor>
   ) {}
 
-  
-  async create(createUserDto: CreateSupervisorDto | CreateRestaurantDto | CreateStudentDto): Promise<User> {
+  async create(createUserDto: CreateRestaurantDto | CreateStudentDto): Promise<User> {
     const { email, password, ...rest } = createUserDto;
     
     if ('name' in rest && 'manager' in rest) {
@@ -40,10 +34,6 @@ export class UsersService {
       const student = this.studentRepository.create(createUserDto);
       student.role = Role.STUDENT; 
       return await this.studentRepository.save(student);
-    }  else if ('lastname' in rest && 'dni' in rest) {
-      const supervisor = this.supervisorRepository.create(createUserDto);
-      supervisor.role = Role.SUPERVISOR; 
-      return await this.supervisorRepository.save(supervisor);
     } else {
       throw new BadRequestException('The provided data does not match any known user type');
     }
@@ -65,10 +55,14 @@ export class UsersService {
     return user;
   }
   
-  async update(id: number, updateUserDto: UpdateUserDto | UpdateStudentDto | UpdateRestaurantDto) {
-    
-    return await this.userRepository.update(id,updateUserDto);
+  async update(id: number, updateUserDto: UpdateUserDto | UpdateStudentDto | UpdateRestaurantDto): Promise<User> {
+    const result = await this.userRepository.update(id, updateUserDto);
+    if (result.affected === 0) {
+      throw new NotFoundException(`User with ID ${id} not found.`);
+    }
+    return this.findOne(id); // Devuelve el usuario actualizado
   }
+  
 
   async remove(id: number): Promise<void> {
     const result = await this.userRepository.softDelete(id);
@@ -115,15 +109,7 @@ export class UsersService {
     return count === 0;
   }
 
-  async fillSupervisorWithSeedData(supervisor: Supervisor){
-    const user = await this.userRepository.findOne({where:{id: supervisor.id}});
-    if(!user){
-      //console.log("entre acá también")
-      //const supervisorUser = this.userRepository.create(supervisor);
-      return await this.userRepository.save(supervisor);
-    }
 
-  }
   async fillStudentWithSeedData(students: Student[]){
     for(let student of students){
       let user = await this.userRepository.findOne({where:{id: student.id}});

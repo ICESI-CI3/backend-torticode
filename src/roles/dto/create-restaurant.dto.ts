@@ -1,4 +1,4 @@
-import { CreateUserDto } from 'src/users/dto/create-user.dto';
+import { CreateUserDto } from '../../users/dto/create-user.dto';
 import { IsNotEmpty, IsString, IsNumber, MinLength, MaxLength, IsPhoneNumber, Equals, Length } from 'class-validator';
 import { Equal } from 'typeorm';
 

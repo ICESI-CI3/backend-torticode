@@ -1,6 +1,5 @@
 import { Module } from '@nestjs/common';
 import { SalesModule } from './sales/sales.module';
-import { ReportsModule } from './reports/reports.module';
 import { UsersModule } from './users/users.module';
 import { ProductsModule } from './products/products.module';
 import { NewsModule } from './news/news.module';
@@ -20,7 +19,7 @@ import { SeedModule } from './seed/seed.module';
       autoLoadEntities: true,
       synchronize: true, 
     }),
-    UsersModule, NewsModule, SalesModule, ProductsModule, ReportsModule, AuthModule, SeedModule],
+    UsersModule, NewsModule, SalesModule, ProductsModule, AuthModule],
   controllers: [],
   providers: [],
 })
