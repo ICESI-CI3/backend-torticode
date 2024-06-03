@@ -1,5 +1,6 @@
 #
 mysql
+postgres
 docker compose up -d
 
 # compiled output
