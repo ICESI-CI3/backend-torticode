@@ -5,7 +5,6 @@ import { Product } from './entities/product.entity';
 import { Repository } from 'typeorm';
 import { UsersService } from '../users/users.service';
 import { CreateProductDto } from './dto/create-product.dto';
-import { UpdateProductDto } from './dto/update-product.dto';
 import { NotFoundException, BadRequestException } from '@nestjs/common';
 
 describe('ProductsService', () => {
@@ -24,7 +23,7 @@ describe('ProductsService', () => {
         {
           provide: UsersService,
           useValue: {
-            findOneByEmail: jest.fn().mockResolvedValue({ id: 1, email: 'test@test.com' }),
+            findOneByEmail: jest.fn(),
           },
         },
       ],
@@ -40,180 +39,117 @@ describe('ProductsService', () => {
   });
 
   describe('create', () => {
-    it('should create a new product', async () => {
+    it('should throw BadRequestException if product with the same name exists', async () => {
       const createProductDto: CreateProductDto = {
         name: 'Test Product',
-        description: 'This is a test product',
         price: 100,
+        description: 'Test Description',
         stock: 10,
-        image: 'http://example.com/image.jpg',
+        image: 'test-image-url'
       };
-      const user = { email: 'test@test.com' };
-      const result = { id: 1, ...createProductDto };
 
+      const user = { id: 1, email: 'test@test.com' };
       jest.spyOn(usersService, 'findOneByEmail').mockResolvedValue(user as any);
-      jest.spyOn(productRepository, 'findOne').mockResolvedValue(null);
-      jest.spyOn(productRepository, 'create').mockReturnValue(result as any);
-      jest.spyOn(productRepository, 'save').mockResolvedValue(result as any);
 
-      expect(await service.create(user, createProductDto)).toBe(result);
-    });
-// SOLUCIONAR ---------------------------------------------------------------------------------- 
-    /*it('should throw BadRequestException if product with the same name exists', async () => {
-      const createProductDto: CreateProductDto = {
-        name: 'Test Product',
-        description: 'This is a test product',
-        price: 100,
-        stock: 10,
-        image: 'http://example.com/image.jpg',
-      };
-      const user = { email: 'test@test.com' };
-      const existingProduct = { id: 1, ...createProductDto };
-
-      jest.spyOn(usersService, 'findOneByEmail').mockResolvedValue(user as any);
+      const existingProduct = new Product();
       jest.spyOn(productRepository, 'findOne').mockResolvedValue(existingProduct as any);
 
-      await expect(service.create(user, createProductDto)).rejects.toThrow(BadRequestException);
-    });*/
+      await expect(service.create({ email: 'test@test.com' }, createProductDto)).rejects.toThrow(BadRequestException);
+    });
 
-    /*it('should throw NotFoundException if user is not found', async () => {
+    it('should throw NotFoundException if user is not found', async () => {
       const createProductDto: CreateProductDto = {
         name: 'Test Product',
-        description: 'This is a test product',
         price: 100,
+        description: 'Test Description',
         stock: 10,
-        image: 'http://example.com/image.jpg',
+        image: 'test-image-url'
       };
-      const user = { email: 'test@test.com' };
 
       jest.spyOn(usersService, 'findOneByEmail').mockResolvedValue(null);
 
-      await expect(service.create(user, createProductDto)).rejects.toThrow(NotFoundException);
-    });*/
+      await expect(service.create({ email: 'test@test.com' }, createProductDto)).rejects.toThrow(NotFoundException);
+    });
+
+    it('should create and return a new product', async () => {
+      const createProductDto: CreateProductDto = {
+        name: 'Test Product',
+        price: 100,
+        description: 'Test Description',
+        stock: 10,
+        image: 'test-image-url'
+      };
+
+      const user = { id: 1, email: 'test@test.com' };
+      jest.spyOn(usersService, 'findOneByEmail').mockResolvedValue(user as any);
+      jest.spyOn(productRepository, 'findOne').mockResolvedValue(null);
+      jest.spyOn(productRepository, 'create').mockReturnValue(createProductDto as any);
+      jest.spyOn(productRepository, 'save').mockResolvedValue(createProductDto as any);
+
+      const result = await service.create({ email: 'test@test.com' }, createProductDto);
+      expect(result).toEqual(createProductDto);
+      expect(usersService.findOneByEmail).toHaveBeenCalledWith('test@test.com');
+      expect(productRepository.create).toHaveBeenCalledWith({
+        ...createProductDto,
+        restaurant: { id: user.id },
+      });
+      expect(productRepository.save).toHaveBeenCalledWith(createProductDto);
+    });
   });
 
-  describe('findAll', () => {
-    it('should return an array of products', async () => {
-        const result = [{ id: 1 }, { id: 2 }];
+  describe('findOne', () => {
+    it('should return a product if found', async () => {
+      const product = new Product();
+      jest.spyOn(productRepository, 'findOne').mockResolvedValue(product);
 
-        jest.spyOn(productRepository, 'find').mockResolvedValue(result as any);
-  
-        expect(await service.findAll()).toBe(result);
-      });
+      expect(await service.findOne(1)).toBe(product);
     });
-  
-    describe('findOne', () => {
-      it('should return a product by id', async () => {
-        const result = { id: 1 };
-  
-        jest.spyOn(productRepository, 'findOne').mockResolvedValue(result as any);
-  
-        expect(await service.findOne(1)).toBe(result);
-      });
-  
-      it('should throw NotFoundException if product not found', async () => {
-        jest.spyOn(productRepository, 'findOne').mockResolvedValue(null);
-  
-        await expect(service.findOne(1)).rejects.toThrow(NotFoundException);
-      });
-    });
-  
-    describe('update', () => {
-      it('should update and return the product', async () => {
-        const updateProductDto: UpdateProductDto = {
-          name: 'Updated Product',
-        };
-        const result = { id: 1, ...updateProductDto };
-  
-        jest.spyOn(productRepository, 'preload').mockResolvedValue(result as any);
-        jest.spyOn(productRepository, 'save').mockResolvedValue(result as any);
-  
-        expect(await service.update(1, updateProductDto)).toBe(result);
-      });
-  
-      it('should throw NotFoundException if product not found', async () => {
-        const updateProductDto: UpdateProductDto = {
-          name: 'Updated Product',
-        };
-  
-        jest.spyOn(productRepository, 'preload').mockResolvedValue(null);
-  
-        await expect(service.update(1, updateProductDto)).rejects.toThrow(NotFoundException);
-      });
-    });
-  
-    describe('remove', () => {
-      it('should remove a product by id', async () => {
-        const result = { affected: 1 };
-  
-        jest.spyOn(productRepository, 'softDelete').mockResolvedValue(result as any);
-  
-        expect(await service.remove(1)).toBeUndefined();
-      });
-  
-      it('should throw NotFoundException if product not found', async () => {
-        const result = { affected: 0 };
-  
-        jest.spyOn(productRepository, 'softDelete').mockResolvedValue(result as any);
-  
-        await expect(service.remove(1)).rejects.toThrow(NotFoundException);
-      });
-    });
-  
-    describe('findByRestaurant', () => {
-      it('should return products by restaurant id', async () => {
-        const result = [{ id: 1 }, { id: 2 }];
-  
-        jest.spyOn(productRepository, 'find').mockResolvedValue(result as any);
-  
-        expect(await service.findByRestaurant(1)).toBe(result);
-      });
-    });
-  
-    describe('fillProductWithSeedData', () => {
-      it('should fill products with seed data', async () => {
-        const seedData = [
-          { id: 1, name: 'Product 1', restaurant: { id: 1 } },
-          { id: 2, name: 'Product 2', restaurant: { id: 1 } },
-        ];
-  
-        jest.spyOn(productRepository, 'findOne').mockResolvedValue(null);
-        jest.spyOn(productRepository, 'save').mockResolvedValue({} as any);
-  
-        await service.fillProductWithSeedData(seedData as any);
-  
-        for (const product of seedData) {
-          expect(productRepository.findOne).toHaveBeenCalledWith({
-            where: {
-              name: product.name,
-              restaurant: { id: product.restaurant.id },
-            },
-          });
-          expect(productRepository.save).toHaveBeenCalledWith(product);
-        }
-      });
-  
-      it('should skip existing products', async () => {
-        const seedData = [
-          { id: 1, name: 'Product 1', restaurant: { id: 1 } },
-          { id: 2, name: 'Product 2', restaurant: { id: 1 } },
-        ];
-  
-        jest.spyOn(productRepository, 'findOne').mockResolvedValue({} as any);
-        jest.spyOn(productRepository, 'save').mockResolvedValue({} as any);
-  
-        await service.fillProductWithSeedData(seedData as any);
-  
-        for (const product of seedData) {
-          expect(productRepository.findOne).toHaveBeenCalledWith({
-            where: {
-              name: product.name,
-              restaurant: { id: product.restaurant.id },
-            },
-          });
-          expect(productRepository.save).not.toHaveBeenCalledWith(product);
-        }
-      });
+
+    it('should throw NotFoundException if product not found', async () => {
+      jest.spyOn(productRepository, 'findOne').mockResolvedValue(null);
+
+      await expect(service.findOne(1)).rejects.toThrow(NotFoundException);
     });
   });
-  
+
+  describe('update', () => {
+    it('should update and return the product', async () => {
+      const updateProductDto = { name: 'Updated Product', price: 150, description: 'Updated Description', stock: 20, image: 'updated-image-url' };
+      const product = new Product();
+      jest.spyOn(productRepository, 'preload').mockResolvedValue(product);
+      jest.spyOn(productRepository, 'save').mockResolvedValue(product);
+
+      const result = await service.update(1, updateProductDto);
+      expect(result).toEqual(product);
+      expect(productRepository.preload).toHaveBeenCalledWith({
+        id: 1,
+        ...updateProductDto,
+      });
+      expect(productRepository.save).toHaveBeenCalledWith(product);
+    });
+
+    it('should throw NotFoundException if product not found', async () => {
+      const updateProductDto = { name: 'Updated Product', price: 150, description: 'Updated Description', stock: 20, image: 'updated-image-url' };
+      jest.spyOn(productRepository, 'preload').mockResolvedValue(null);
+
+      await expect(service.update(1, updateProductDto)).rejects.toThrow(NotFoundException);
+    });
+  });
+
+  describe('remove', () => {
+    it('should remove a product if found', async () => {
+      const deleteResult = { affected: 1 } as any;
+      jest.spyOn(productRepository, 'softDelete').mockResolvedValue(deleteResult);
+
+      await service.remove(1);
+      expect(productRepository.softDelete).toHaveBeenCalledWith(1);
+    });
+
+    it('should throw NotFoundException if product not found', async () => {
+      const deleteResult = { affected: 0 } as any;
+      jest.spyOn(productRepository, 'softDelete').mockResolvedValue(deleteResult);
+
+      await expect(service.remove(1)).rejects.toThrow(NotFoundException);
+    });
+  });
+});

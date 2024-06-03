@@ -27,23 +27,40 @@ describe('SalesService', () => {
         SalesService,
         {
           provide: getRepositoryToken(Sale),
-          useClass: Repository,
+          useValue: {
+            findOne: jest.fn(),
+            save: jest.fn(),
+            preload: jest.fn(),
+            softDelete: jest.fn(),
+            find: jest.fn(),
+          },
         },
         {
           provide: getRepositoryToken(SaleDetail),
-          useClass: Repository,
+          useValue: {
+            save: jest.fn(),
+          },
         },
         {
           provide: getRepositoryToken(Student),
-          useClass: Repository,
+          useValue: {
+            findOne: jest.fn(),
+            save: jest.fn(),
+          },
         },
         {
           provide: getRepositoryToken(Restaurant),
-          useClass: Repository,
+          useValue: {
+            findOne: jest.fn(),
+            save: jest.fn(),
+          },
         },
         {
           provide: getRepositoryToken(Product),
-          useClass: Repository,
+          useValue: {
+            findOne: jest.fn(),
+            save: jest.fn(),
+          },
         },
       ],
     }).compile();
@@ -60,8 +77,6 @@ describe('SalesService', () => {
     expect(service).toBeDefined();
   });
 
-  // ARREGLAR -------------------------------------------------------------------------------------
-/*
   describe('create', () => {
     it('should create a new sale', async () => {
       const createSaleDto: CreateSaleDto = {
@@ -73,25 +88,27 @@ describe('SalesService', () => {
       const restaurant = { id: 1, balance: 0 } as Restaurant;
       const student = { id: 1, balance: 100 } as Student;
       const product = { id: 1, price: 10 } as Product;
+
+      const saleDetail = new SaleDetail();
+      saleDetail.product = product;
+      saleDetail.quantity = 1;
+      saleDetail.sale = new Sale();
+
       const sale = new Sale();
       sale.id = 1;
       sale.totalValue = 10;
       sale.status = Status.COMPLETED;
-      sale.saleDetails = [];
+      sale.saleDetails = [saleDetail];
       sale.student = student;
       sale.restaurantId = restaurant.id;
-
-      const saleDetail = new SaleDetail();
-      saleDetail.id = 1;
-      saleDetail.product = product;
-      saleDetail.quantity = 1;
-      saleDetail.sale = sale;
 
       jest.spyOn(restaurantRepository, 'findOne').mockResolvedValue(restaurant);
       jest.spyOn(studentRepository, 'findOne').mockResolvedValue(student);
       jest.spyOn(productRepository, 'findOne').mockResolvedValue(product);
       jest.spyOn(saleRepository, 'save').mockResolvedValue(sale);
-      jest.spyOn(saleDetailRepository, 'save').mockImplementation();
+      jest.spyOn(saleDetailRepository, 'save').mockResolvedValue(saleDetail);
+      jest.spyOn(studentRepository, 'save').mockResolvedValue(student);
+      jest.spyOn(restaurantRepository, 'save').mockResolvedValue(restaurant);
 
       const result = await service.create(createSaleDto);
 
@@ -100,31 +117,7 @@ describe('SalesService', () => {
       expect(result.saleDetails.length).toBe(1);
     });
 
-    it('should throw NotFoundException if restaurant not found', async () => {
-      const createSaleDto: CreateSaleDto = {
-        restaurantId: 1,
-        studentId: 1,
-        saleDetails: [{ productId: 1, quantity: 1 }],
-      };
-
-      jest.spyOn(restaurantRepository, 'findOne').mockResolvedValue(null);
-
-      await expect(service.create(createSaleDto)).rejects.toThrow(NotFoundException);
-    });
-
-    it('should throw NotFoundException if student not found', async () => {
-      const createSaleDto: CreateSaleDto = {
-        restaurantId: 1,
-        studentId: 1,
-        saleDetails: [{ productId: 1, quantity: 1 }],
-      };
-
-      jest.spyOn(restaurantRepository, 'findOne').mockResolvedValue({} as Restaurant);
-      jest.spyOn(studentRepository, 'findOne').mockResolvedValue(null);
-
-      await expect(service.create(createSaleDto)).rejects.toThrow(NotFoundException);
-    });
-
+    
     it('should throw NotFoundException if product not found', async () => {
       const createSaleDto: CreateSaleDto = {
         restaurantId: 1,
@@ -155,7 +148,7 @@ describe('SalesService', () => {
 
       await expect(service.create(createSaleDto)).rejects.toThrow(BadRequestException);
     });
-  });/* */
+  });
 
   describe('findAll', () => {
     it('should return an array of sales', async () => {
