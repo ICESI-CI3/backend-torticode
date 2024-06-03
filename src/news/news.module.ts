@@ -12,5 +12,6 @@ import { UsersModule } from 'src/users/users.module';
   UsersModule],
   controllers: [NewsController],
   providers: [NewsService],
+  exports: [NewsService],
 })
 export class NewsModule {}

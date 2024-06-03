@@ -5,6 +5,7 @@ import { ProductsModule } from './products/products.module';
 import { NewsModule } from './news/news.module';
 import { AuthModule } from './auth/auth.module';
 import {TypeOrmModule} from '@nestjs/typeorm'
+import { SeedModule } from './seed/seed.module';
 
 @Module({
   imports: [ 

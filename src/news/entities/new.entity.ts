@@ -12,8 +12,7 @@ export class New {
     @Column()
     image: string;
 
-    @Column('timestamp', 
-            {nullable: false, default: () => 'CURRENT_TIMESTAMP'})
+    @Column({ type: 'bigint', nullable: false })
     createdAt: number;
 
     @DeleteDateColumn()

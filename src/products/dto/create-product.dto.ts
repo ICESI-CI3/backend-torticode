@@ -2,20 +2,20 @@ import { IsInt, IsString, Length, IsOptional, IsUrl } from "class-validator";
 
 export class CreateProductDto {
 
-    @IsString()
+    @IsString({message: 'Name must be a string'})
     readonly name: string;
 
-    @IsString()
+    @IsString({message: 'Description must be a string'})
     @Length(10,150)
     readonly description: string;
 
-    @IsInt()
+    @IsInt({message: 'Price must be a positive number'})
     readonly price: number;
 
-    @IsInt()
+    @IsInt({message: 'Stock must be a positive number'})
     readonly stock: number;
 
-    @IsOptional()
+    @IsOptional({message: 'Image is optional'})
     @IsUrl()
     readonly image: string;
 
