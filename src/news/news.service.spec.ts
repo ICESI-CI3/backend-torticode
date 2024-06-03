@@ -11,9 +11,9 @@ import { NotFoundException } from '@nestjs/common';
 
 describe('NewsService', () => {
   let service: NewsService;
-  let newsRepository: Repository<New>;
-  let restaurantRepository: Repository<Restaurant>;
-  let usersService: UsersService;
+  let newsRepository: jest.Mocked<Repository<New>>;
+  let restaurantRepository: jest.Mocked<Repository<Restaurant>>;
+  let usersService: jest.Mocked<UsersService>;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -21,11 +21,20 @@ describe('NewsService', () => {
         NewsService,
         {
           provide: getRepositoryToken(New),
-          useClass: Repository,
+          useValue: {
+            find: jest.fn(),
+            findOne: jest.fn(),
+            create: jest.fn(),
+            save: jest.fn(),
+            preload: jest.fn(),
+            softDelete: jest.fn(),
+          },
         },
         {
           provide: getRepositoryToken(Restaurant),
-          useClass: Repository,
+          useValue: {
+            findOne: jest.fn(),
+          },
         },
         {
           provide: UsersService,
@@ -37,9 +46,9 @@ describe('NewsService', () => {
     }).compile();
 
     service = module.get<NewsService>(NewsService);
-    newsRepository = module.get<Repository<New>>(getRepositoryToken(New));
-    restaurantRepository = module.get<Repository<Restaurant>>(getRepositoryToken(Restaurant));
-    usersService = module.get<UsersService>(UsersService);
+    newsRepository = module.get(getRepositoryToken(New));
+    restaurantRepository = module.get(getRepositoryToken(Restaurant));
+    usersService = module.get(UsersService);
   });
 
   it('should be defined', () => {
@@ -57,9 +66,9 @@ describe('NewsService', () => {
       const user = { id: 1, email: 'test@example.com' };
       const news = { id: 1, ...createNewsDto, restaurant: user };
 
-      jest.spyOn(usersService, 'findOneByEmail').mockResolvedValue(user as any);
-      jest.spyOn(newsRepository, 'create').mockReturnValue(news as any);
-      jest.spyOn(newsRepository, 'save').mockResolvedValue(news as any);
+      usersService.findOneByEmail.mockResolvedValue(user as any);
+      newsRepository.create.mockReturnValue(news as any);
+      newsRepository.save.mockResolvedValue(news as any);
 
       const result = await service.create({ email: user.email }, createNewsDto);
 
@@ -76,7 +85,7 @@ describe('NewsService', () => {
         image: 'http://example.com/image.jpg',
       };
 
-      jest.spyOn(usersService, 'findOneByEmail').mockResolvedValue(null);
+      usersService.findOneByEmail.mockResolvedValue(null);
 
       await expect(service.create({ email: 'nonexistent@example.com' }, createNewsDto)).rejects.toThrow(NotFoundException);
     });
@@ -85,7 +94,7 @@ describe('NewsService', () => {
   describe('findAll', () => {
     it('should return an array of news', async () => {
       const newsArray = [{ id: 1, title: 'News Title' }];
-      jest.spyOn(newsRepository, 'find').mockResolvedValue(newsArray as any);
+      newsRepository.find.mockResolvedValue(newsArray as any);
 
       const result = await service.findAll();
       expect(result).toEqual(newsArray);
@@ -95,14 +104,14 @@ describe('NewsService', () => {
   describe('findOne', () => {
     it('should return a news by id', async () => {
       const news = { id: 1, title: 'News Title' };
-      jest.spyOn(newsRepository, 'findOne').mockResolvedValue(news as any);
+      newsRepository.findOne.mockResolvedValue(news as any);
 
       const result = await service.findOne(1);
       expect(result).toEqual(news);
     });
 
     it('should throw NotFoundException if news not found', async () => {
-      jest.spyOn(newsRepository, 'findOne').mockResolvedValue(null);
+      newsRepository.findOne.mockResolvedValue(null);
 
       await expect(service.findOne(1)).rejects.toThrow(NotFoundException);
     });
@@ -117,8 +126,8 @@ describe('NewsService', () => {
       };
 
       const news = { id: 1, ...updateNewsDto };
-      jest.spyOn(newsRepository, 'preload').mockResolvedValue(news as any);
-      jest.spyOn(newsRepository, 'save').mockResolvedValue(news as any);
+      newsRepository.preload.mockResolvedValue(news as any);
+      newsRepository.save.mockResolvedValue(news as any);
 
       const result = await service.update(1, updateNewsDto);
       expect(result).toEqual(news);
@@ -131,7 +140,7 @@ describe('NewsService', () => {
         image: 'http://example.com/updated_image.jpg',
       };
 
-      jest.spyOn(newsRepository, 'preload').mockResolvedValue(null);
+      newsRepository.preload.mockResolvedValue(null);
 
       await expect(service.update(1, updateNewsDto)).rejects.toThrow(NotFoundException);
     });
@@ -140,7 +149,7 @@ describe('NewsService', () => {
   describe('remove', () => {
     it('should remove a news by id', async () => {
       const result = { affected: 1 };
-      jest.spyOn(newsRepository, 'softDelete').mockResolvedValue(result as any);
+      newsRepository.softDelete.mockResolvedValue(result as any);
 
       await service.remove(1);
       expect(newsRepository.softDelete).toHaveBeenCalledWith(1);
@@ -148,28 +157,27 @@ describe('NewsService', () => {
 
     it('should throw NotFoundException if news not found', async () => {
       const result = { affected: 0 };
-      jest.spyOn(newsRepository, 'softDelete').mockResolvedValue(result as any);
+      newsRepository.softDelete.mockResolvedValue(result as any);
 
       await expect(service.remove(1)).rejects.toThrow(NotFoundException);
     });
   });
-//------------------------Arreglar --------------------------------
-  /*
+
   describe('findByRestaurantId', () => {
     it('should return news by restaurant id', async () => {
       const newsArray = [{ id: 1, title: 'News Title' }];
-      jest.spyOn(newsRepository, 'find').mockResolvedValue(newsArray as any);
+      newsRepository.find.mockResolvedValue(newsArray as any);
 
       const result = await service.findByRestaurantId(1);
       expect(result).toEqual(newsArray);
     });
 
     it('should throw NotFoundException if news not found for restaurant', async () => {
-      jest.spyOn(newsRepository, 'find').mockResolvedValue([]);
+      newsRepository.find.mockResolvedValue([]);
 
       await expect(service.findByRestaurantId(1)).rejects.toThrow(NotFoundException);
     });
-  });*/
+  });
 
   describe('fillNewsWithSeedData', () => {
     it('should fill news with seed data', async () => {
@@ -178,24 +186,23 @@ describe('NewsService', () => {
         { id: 2, title: 'News 2', restaurant: { id: 1 } },
       ];
 
-      jest.spyOn(newsRepository, 'findOne').mockResolvedValue(null);
-      jest.spyOn(newsRepository, 'save').mockResolvedValue(news as any);
+      newsRepository.findOne.mockResolvedValue(null);
+      newsRepository.save.mockResolvedValue(news as any);
 
       await service.fillNewsWithSeedData(news as any);
       expect(newsRepository.save).toHaveBeenCalled();
     });
 
-    /*----ARREGLAR-----------------------------------------------------------
     it('should skip existing news', async () => {
       const news = [
         { id: 1, title: 'News 1', restaurant: { id: 1 } },
         { id: 2, title: 'News 2', restaurant: { id: 1 } },
       ];
 
-      jest.spyOn(newsRepository, 'findOne').mockResolvedValue(news[0] as any);
+      newsRepository.findOne.mockResolvedValue(news[0] as any);
 
       await service.fillNewsWithSeedData(news as any);
       expect(newsRepository.save).not.toHaveBeenCalledWith(news[0]);
-    });*/
+    });
   });
 });

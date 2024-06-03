@@ -1,4 +1,4 @@
-import { HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
+import { HttpStatus, Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -44,7 +44,6 @@ export class ProductsService {
 
   async create({email}: {email: string;}, createProductDto: CreateProductDto): Promise<Product> {
     const user = await this.usersService.findOneByEmail(email);
-    console.log(user.id);
 
     if (!user) {
       throw new NotFoundException(`User not found with email ${email}`);
@@ -54,17 +53,17 @@ export class ProductsService {
     const productExists = await this.productRepository.findOne({
       where: {
         name: productName,
-        restaurant: { id: user.id} 
+        restaurant: { id: user.id } 
       }
     });
 
     if (productExists) {
-      throw new HttpException('Product with this name already exists', HttpStatus.BAD_REQUEST);
+      throw new BadRequestException('Product with this name already exists');
     }
 
     const product = this.productRepository.create({
       ...createProductDto,
-      restaurant: { id: user.id} // Asociar el producto al restaurante del usuario
+      restaurant: { id: user.id }
     });
 
     return await this.productRepository.save(product);
