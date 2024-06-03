@@ -18,17 +18,18 @@ export class NewsService {
     private readonly usersService: UsersService,
   ){}
   
-  async create({email}: {email:string;}, createNewsDto: CreateNewsDto) {
-    const userTest = await this.usersService.findOneByEmail(email);
-    const user = await userTest;
-    console.log(user.id);
-    if(!user){
-      throw new NotFoundException(`Restaurant not found with ID ${user.id}`);
+  async create({email}: {email: string;}, createNewsDto: CreateNewsDto): Promise<New> {
+    const user = await this.usersService.findOneByEmail(email);
+    if (!user) {
+      throw new NotFoundException(`User not found with email ${email}`);
     }
+    console.log(user.id);  // Esto se mueve después de la verificación de usuario
+  
     const news = this.newsRepository.create(createNewsDto);
     news.restaurant = user as Restaurant;
     return await this.newsRepository.save(news);
   }
+  
 
   async findAll(): Promise<New[]> {
     return await this.newsRepository.find({
