@@ -1,8 +1,6 @@
-import { Column, DeleteDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { Product } from '../../products/entities/product.entity';
-import { User } from '../../users/entities/user.entity';
 import { Sale } from 'src/sales/entities/sale.entity';
-import { Exclude } from 'class-transformer';
 
 @Entity()
 export class SaleDetail {

@@ -11,8 +11,6 @@ import { Repository } from 'typeorm';
 import { Role } from '../roles/enum/role.enum';
 import { UpdateStudentDto } from '../roles/dto/update-student.dto';
 import { UpdateRestaurantDto } from '../roles/dto/update-restaurant.dto';
-import { CreateSupervisorDto } from '../roles/dto/create-supervisor.dto';
-import { Supervisor } from '../roles/entities/supervisor.entity';
 
 @Injectable()
 export class UsersService {
@@ -23,11 +21,9 @@ export class UsersService {
     private restaurantRepository: Repository<Restaurant>,
     @InjectRepository(Student)
     private studentRepository: Repository<Student>,
-    @InjectRepository(Supervisor)
-    private supervisorRepository: Repository<Supervisor>
   ) {}
 
-  async create(createUserDto: CreateSupervisorDto | CreateRestaurantDto | CreateStudentDto): Promise<User> {
+  async create(createUserDto: CreateRestaurantDto | CreateStudentDto): Promise<User> {
     const { email, password, ...rest } = createUserDto;
     
     if ('name' in rest && 'manager' in rest) {
@@ -38,10 +34,6 @@ export class UsersService {
       const student = this.studentRepository.create(createUserDto);
       student.role = Role.STUDENT; 
       return await this.studentRepository.save(student);
-    }  else if ('lastname' in rest && 'dni' in rest) {
-      const supervisor = this.supervisorRepository.create(createUserDto);
-      supervisor.role = Role.SUPERVISOR; 
-      return await this.supervisorRepository.save(supervisor);
     } else {
       throw new BadRequestException('The provided data does not match any known user type');
     }
@@ -63,9 +55,14 @@ export class UsersService {
     return user;
   }
   
-  async update(id: number, updateUserDto: UpdateUserDto | UpdateStudentDto | UpdateRestaurantDto) {
-    return await this.userRepository.update(id, updateUserDto);
+  async update(id: number, updateUserDto: UpdateUserDto | UpdateStudentDto | UpdateRestaurantDto): Promise<User> {
+    const result = await this.userRepository.update(id, updateUserDto);
+    if (result.affected === 0) {
+      throw new NotFoundException(`User with ID ${id} not found.`);
+    }
+    return this.findOne(id); // Devuelve el usuario actualizado
   }
+  
 
   async remove(id: number): Promise<void> {
     const result = await this.userRepository.softDelete(id);

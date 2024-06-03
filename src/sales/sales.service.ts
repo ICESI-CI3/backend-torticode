@@ -8,7 +8,6 @@ import { SaleDetail } from 'src/sale-details/entities/sale-detail.entity';
 import { Student } from 'src/roles/entities/student.entity';
 import { Restaurant } from 'src/roles/entities/restaurant.entity';
 import { Status } from './enum/status.enum';
-import { CreateSaleDetailDto } from 'src/sale-details/dto/create-sale-detail.dto';
 import { Product } from 'src/products/entities/product.entity';
 import { toSaleDTO } from './sales.utils';
 import { ResponseSaleDto } from './dto/response-sale.dto';
@@ -44,7 +43,7 @@ export class SalesService {
       throw new NotFoundException('Student no found.');
     }
     
-    sale.restaurant = restaurant //Cambiará con la autorizacion
+    sale.restaurantId = restaurant.id //Cambiará con la autorizacion
     sale.student = student
     sale.status = Status.PENDING;
     

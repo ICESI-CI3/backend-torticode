@@ -1,27 +1,23 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { getRepositoryToken } from '@nestjs/typeorm';
 import { UsersService } from './users.service';
 import { User } from './entities/user.entity';
 import { Restaurant } from '../roles/entities/restaurant.entity';
 import { Student } from '../roles/entities/student.entity';
-import { Supervisor } from '../roles/entities/supervisor.entity';
-import { Repository, UpdateResult, DeleteResult } from 'typeorm';
+import { getRepositoryToken } from '@nestjs/typeorm';
+import { Repository, UpdateResult } from 'typeorm';
+import { NotFoundException } from '@nestjs/common';
 import { Role } from '../roles/enum/role.enum';
-import { NotFoundException } from '@nestjs/common/exceptions';
+import { CreateStudentDto } from '../roles/dto/create-student.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
 
 describe('UsersService', () => {
   let service: UsersService;
   let userRepository: Repository<User>;
   let restaurantRepository: Repository<Restaurant>;
   let studentRepository: Repository<Student>;
-  let supervisorRepository: Repository<Supervisor>;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      imports: [
-        TypeOrmModule.forFeature([User, Restaurant, Student, Supervisor]),
-      ],
       providers: [
         UsersService,
         {
@@ -36,10 +32,6 @@ describe('UsersService', () => {
           provide: getRepositoryToken(Student),
           useClass: Repository,
         },
-        {
-          provide: getRepositoryToken(Supervisor),
-          useClass: Repository,
-        },
       ],
     }).compile();
 
@@ -47,137 +39,117 @@ describe('UsersService', () => {
     userRepository = module.get<Repository<User>>(getRepositoryToken(User));
     restaurantRepository = module.get<Repository<Restaurant>>(getRepositoryToken(Restaurant));
     studentRepository = module.get<Repository<Student>>(getRepositoryToken(Student));
-    supervisorRepository = module.get<Repository<Supervisor>>(getRepositoryToken(Supervisor));
   });
 
   it('should be defined', () => {
     expect(service).toBeDefined();
   });
 
-  describe('create', () => {
-    it('should create a restaurant', async () => {
-      const createRestaurantDto = {
-        email: 'restaurant@example.com',
-        password: 'Password123',
-        name: 'Test Restaurant',
-        nit: 123456789,
-        manager: 'John Doe',
-        phone: '1234567890',
-      };
-
-      jest.spyOn(restaurantRepository, 'save').mockResolvedValue(createRestaurantDto as Restaurant);
-
-      const result = await service.create(createRestaurantDto);
-      expect(result).toEqual(createRestaurantDto);
-      expect(result.role).toEqual(Role.RESTAURANT);
-    });
-
-    it('should create a student', async () => {
-      const createStudentDto = {
-        email: 'student@example.com',
-        password: 'Password123',
-        name: 'Test Student',
-        lastname: 'Doe',
-        dni: 123456789,
-        code: '123456789',
-        program: 'Computer Science',
-      };
-
-      jest.spyOn(studentRepository, 'save').mockResolvedValue(createStudentDto as Student);
-
-      const result = await service.create(createStudentDto);
-      expect(result).toEqual(createStudentDto);
-      expect(result.role).toEqual(Role.STUDENT);
-    });
-
-    it('should create a supervisor', async () => {
-      const createSupervisorDto = {
-        email: 'supervisor@example.com',
-        password: 'Password123',
-        name: 'Test Supervisor',
-        lastname: 'Doe',
-        dni: 123456789,
-      };
-
-      jest.spyOn(supervisorRepository, 'save').mockResolvedValue(createSupervisorDto as Supervisor);
-
-      const result = await service.create(createSupervisorDto);
-      expect(result).toEqual(createSupervisorDto);
-      expect(result.role).toEqual(Role.SUPERVISOR);
-    });
-  });
-
   describe('findAll', () => {
     it('should return an array of users', async () => {
-      const result = [new Restaurant(), new Student(), new Supervisor()];
-      jest.spyOn(userRepository, 'find').mockResolvedValue(result);
+      const usersArray: User[] = [
+        new User(),
+        new User(),
+      ];
 
-      expect(await service.findAll()).toEqual(result);
+      jest.spyOn(userRepository, 'find').mockResolvedValue(usersArray);
+
+      expect(await service.findAll()).toBe(usersArray);
     });
   });
 
   describe('findOne', () => {
-    it('should return a user', async () => {
-      const user = new Restaurant();
+    it('should return a user if found', async () => {
+      const user = new User();
       jest.spyOn(userRepository, 'findOne').mockResolvedValue(user);
 
-      expect(await service.findOne(1)).toEqual(user);
+      expect(await service.findOne(1)).toBe(user);
     });
 
-    it('should throw an error if user not found', async () => {
+    it('should throw NotFoundException if user not found', async () => {
       jest.spyOn(userRepository, 'findOne').mockResolvedValue(null);
 
       await expect(service.findOne(1)).rejects.toThrow(NotFoundException);
     });
   });
 
+  describe('create', () => {
+    it('should create and return a new student', async () => {
+      const createStudentDto: CreateStudentDto = {
+        email: 'test@student.com',
+        password: 'Test1234',
+        name: 'John',
+        lastname: 'Doe',
+        dni: 12345678,
+        code: '20210001',
+        program: 'Engineering',
+      };
+
+      const student = new Student();
+      jest.spyOn(studentRepository, 'create').mockReturnValue(student);
+      jest.spyOn(studentRepository, 'save').mockResolvedValue(student);
+
+      expect(await service.create(createStudentDto)).toBe(student);
+    });
+  });
+
   describe('update', () => {
-    it('should update a user', async () => {
-      const updateUserDto = { email: 'updated@example.com' };
-      const user = new Restaurant();
+    it('should update and return the user', async () => {
+      const updateUserDto: UpdateUserDto = {
+        email: 'updated@student.com',
+      };
+
+      const user = new User();
       jest.spyOn(userRepository, 'findOne').mockResolvedValue(user);
+      jest.spyOn(userRepository, 'save').mockResolvedValue(user);
       jest.spyOn(userRepository, 'update').mockResolvedValue({ affected: 1 } as UpdateResult);
+      jest.spyOn(userRepository, 'findOne').mockResolvedValueOnce(user); // Mock findOne again to return updated user
 
-      await service.update(1, updateUserDto);
-
-      expect(userRepository.update).toHaveBeenCalledWith(1, updateUserDto);
-      expect(userRepository.findOne).toHaveBeenCalledWith({ where: { id: 1 } });
+      expect(await service.update(1, updateUserDto)).toBe(user);
     });
 
-    it('should throw an error if user not found', async () => {
-      const updateUserDto = { email: 'updated@example.com' };
+    it('should throw NotFoundException if user not found', async () => {
+      const updateUserDto: UpdateUserDto = {
+        email: 'updated@student.com',
+      };
+
       jest.spyOn(userRepository, 'findOne').mockResolvedValue(null);
+      jest.spyOn(userRepository, 'update').mockResolvedValue({ affected: 0 } as UpdateResult);
 
       await expect(service.update(1, updateUserDto)).rejects.toThrow(NotFoundException);
     });
   });
 
   describe('remove', () => {
-    it('should remove a user', async () => {
-      jest.spyOn(userRepository, 'softDelete').mockResolvedValue({ affected: 1 } as UpdateResult);
+    it('should remove a user if found', async () => {
+      const deleteResult = { affected: 1 } as any;
+      jest.spyOn(userRepository, 'softDelete').mockResolvedValue(deleteResult);
 
-      await expect(service.remove(1)).resolves.toBeUndefined();
+      await service.remove(1);
+      expect(userRepository.softDelete).toHaveBeenCalledWith(1);
     });
 
-    it('should throw an error if user not found', async () => {
-      jest.spyOn(userRepository, 'softDelete').mockResolvedValue({ affected: 0 } as UpdateResult);
+    it('should throw NotFoundException if user not found', async () => {
+      const deleteResult = { affected: 0 } as any;
+      jest.spyOn(userRepository, 'softDelete').mockResolvedValue(deleteResult);
 
       await expect(service.remove(1)).rejects.toThrow(NotFoundException);
     });
   });
 
   describe('updateBalance', () => {
-    it('should update the balance of a user', async () => {
-      const user = new Restaurant();
+    it('should update the user balance', async () => {
+      const user = new User();
       user.balance = 100;
       jest.spyOn(userRepository, 'findOne').mockResolvedValue(user);
       jest.spyOn(userRepository, 'save').mockResolvedValue(user);
 
-      const result = await service.updateBalance(1, 50);
-      expect(result.balance).toEqual(150);
+      const amount = 50;
+      expect(await service.updateBalance(1, amount)).toBe(user);
+      expect(user.balance).toBe(150);
     });
 
-    it('should throw an error if user not found', async () => {
+    it('should throw NotFoundException if user not found', async () => {
       jest.spyOn(userRepository, 'findOne').mockResolvedValue(null);
 
       await expect(service.updateBalance(1, 50)).rejects.toThrow(NotFoundException);
@@ -185,19 +157,67 @@ describe('UsersService', () => {
   });
 
   describe('updateRole', () => {
-    it('should update the role of a user', async () => {
-      const user = new Restaurant();
+    it('should update the user role', async () => {
+      const user = new User();
+      user.role = Role.STUDENT;
       jest.spyOn(userRepository, 'findOne').mockResolvedValue(user);
       jest.spyOn(userRepository, 'save').mockResolvedValue(user);
 
-      const result = await service.updateRole(1, Role.SUPERVISOR);
-      expect(result.role).toEqual(Role.SUPERVISOR);
+      const newRole = Role.RESTAURANT;
+      expect(await service.updateRole(1, newRole)).toBe(user);
+      expect(user.role).toBe(newRole);
     });
 
-    it('should throw an error if user not found', async () => {
+    it('should throw NotFoundException if user not found', async () => {
       jest.spyOn(userRepository, 'findOne').mockResolvedValue(null);
 
-      await expect(service.updateRole(1, Role.SUPERVISOR)).rejects.toThrow(NotFoundException);
+      await expect(service.updateRole(1, Role.RESTAURANT)).rejects.toThrow(NotFoundException);
+    });
+  });
+
+  describe('findByRole', () => {
+    it('should return an array of users with the given role', async () => {
+      const usersArray: User[] = [
+        new User(),
+        new User(),
+      ];
+
+      jest.spyOn(userRepository, 'find').mockResolvedValue(usersArray);
+
+      expect(await service.findByRole(Role.STUDENT)).toBe(usersArray);
+    });
+  });
+
+  describe('findOneByEmail', () => {
+    it('should return a user if found by email', async () => {
+      const user = new User();
+      user.email = 'test@example.com';
+      jest.spyOn(userRepository, 'findOneBy').mockResolvedValue(user);
+
+      expect(await service.findOneByEmail('test@example.com')).toBe(user);
+    });
+
+    it('should return null if user not found by email', async () => {
+      jest.spyOn(userRepository, 'findOneBy').mockResolvedValue(null);
+
+      expect(await service.findOneByEmail('test@example.com')).toBeNull();
+    });
+  });
+
+  describe('findByEmailWithPassword', () => {
+    it('should return a user with password if found by email', async () => {
+      const user = new User();
+      user.email = 'test@example.com';
+      user.password = 'hashedPassword';
+      jest.spyOn(userRepository, 'findOne').mockResolvedValue(user);
+
+      expect(await service.findByEmailWithPassword('test@example.com')).toBe(user);
+    });
+
+    it('should return null if user not found by email with password', async () => {
+      jest.spyOn(userRepository, 'findOne').mockResolvedValue(null);
+
+      expect(await service.findByEmailWithPassword('test@example.com')).toBeNull();
     });
   });
 });

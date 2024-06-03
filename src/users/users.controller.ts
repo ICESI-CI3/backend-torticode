@@ -15,27 +15,20 @@ import { Auth } from '../auth/decorators/auth.decorators';
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  @Auth(Role.SUPERVISOR)
   @Post('restaurant')
   createRestaurant(@Body() createRestaurantDto: CreateRestaurantDto) {
     return this.usersService.create(createRestaurantDto);
   }
-  @Auth(Role.SUPERVISOR)
+
   @Post('student')
   createStudent(@Body() createStudentDto: CreateStudentDto) {
     return this.usersService.create(createStudentDto);
-  }
-  @Auth(Role.SUPERVISOR)
-  @Post('supervisor')
-  createSupervisor(@Body() createSupervisorDto: CreateSupervisorDto) {
-    return this.usersService.create(createSupervisorDto);
   }
   
   @Get()
   findAll() {
     return this.usersService.findAll();
   }
-
   
   @Get(':id')
   findOne(@Param('id') id: number) {
@@ -52,11 +45,6 @@ export class UsersController {
     return this.usersService.update(id, updateUserDto);
   }
 
-  @Patch('supervisor/:id')
-  updateSupervisor(@Param('id') id: number, @Body() updateUserDto: UpdateSupervisorDto) {
-    return this.usersService.update(id, updateUserDto);
-  }
-
   @Delete(':id')
   remove(@Param('id') id: number) {
     return this.usersService.remove(id);
@@ -70,11 +58,6 @@ export class UsersController {
   @Patch('balance/:id')
   updateBalance(@Param('id') id: number, @Body('amount') amount: number) {
     return this.usersService.updateBalance(id, amount);
-  }
-  @Auth(Role.SUPERVISOR)
-  @Patch('role/:id')
-  updateRole(@Param('id') id: number, @Body('role') role: Role) {
-    return this.usersService.updateRole(id, role);
   }
   
 }

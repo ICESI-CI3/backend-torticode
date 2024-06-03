@@ -9,7 +9,7 @@ import { Role } from 'src/roles/enum/role.enum';
 export class SalesController {
   constructor(private readonly salesService: SalesService) {}
 
-  @Auth(Role.RESTAURANT)
+  @Auth(Role.STUDENT)
   @Post()
   create(@Body() createSaleDto: CreateSaleDto) {
     return this.salesService.create(createSaleDto);
@@ -25,14 +25,11 @@ export class SalesController {
     return this.salesService.findOne(+id);
   }
 
-  
-  @Auth(Role.RESTAURANT)
   @Patch(':id')
   update(@Param('id') id: number, @Body() updateSaleDto: UpdateSaleDto) {
     return this.salesService.update(+id, updateSaleDto);
   }
 
-  @Auth(Role.RESTAURANT)
   @Delete(':id')
   remove(@Param('id') id: number) {
     return this.salesService.remove(+id);
