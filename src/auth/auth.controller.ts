@@ -26,7 +26,7 @@ export class AuthController {
         return this.authService.login(loginDto);
     }
 
-    @Auth(Role.SUPERVISOR)
+
     @Post('register')
     register(
     @Body()
@@ -34,8 +34,6 @@ export class AuthController {
   ) {
     return this.authService.register(registerDto);
   }
-
-    
 
     @Get('profile')
     //@Auth(Role.SUPERVISOR)

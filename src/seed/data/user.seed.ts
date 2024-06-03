@@ -2,25 +2,7 @@ import { New } from "src/news/entities/new.entity";
 import { Product } from "src/products/entities/product.entity";
 import { Restaurant } from "src/roles/entities/restaurant.entity";
 import { Student } from "src/roles/entities/student.entity";
-import { Supervisor } from "src/roles/entities/supervisor.entity";
 import { Role } from "src/roles/enum/role.enum";
-import { SaleDetail } from "src/sale-details/entities/sale-detail.entity";
-import * as bcryptjs from 'bcryptjs';
-import { Sale } from "src/sales/entities/sale.entity";
-
-const supervisor:Supervisor = new Supervisor();
-supervisor.id=1
-supervisor.email= 'supervisor@gmail.com'
-//Supervisor1
-supervisor.password= '$2b$10$VqUKHZK/fAGX/B6qppXUsO2.ORekP6xAULHr6E3hUgdz4.yEYmQrC'
-supervisor.balance=50000
-supervisor.role= Role.SUPERVISOR
-supervisor.createdAt= new Date().getTime()
-supervisor.deleteAt= null
-supervisor.reports= []
-supervisor.name= 'John'
-supervisor.lastname='Due'
-supervisor.dni= 12345678
 
 const studentSeed:Student[] = [
     {
@@ -31,18 +13,14 @@ const studentSeed:Student[] = [
         role: Role.STUDENT,
         createdAt: new Date().getTime(),
         deleteAt: null,
-        reports: [],
         name: "Juana",
         lastname: "Perez",
         dni:11223344,
         code: "A00377995",
         program: "Ing. de Sistemas",
         sales: [],
-        supervisor: supervisor
     }
 ]
-supervisor.students=studentSeed
-
 
 const restaurantSeed: Restaurant[] = [
 
@@ -54,19 +32,14 @@ const restaurantSeed: Restaurant[] = [
         role:Role.RESTAURANT,
         createdAt: new Date().getTime(),
         deleteAt: null,
-        reports: [],
         name: "Bristo",
         nit: 123456789,
         manager: "Gloria Gomez",
         phone: "3126779774",
-        sales: [],
         news:[],
         products:[],
-        supervisor: supervisor,
     }
 ]
-
-supervisor.restaurants=restaurantSeed
 
 const productsSeed: Product[] = [
     {
@@ -120,7 +93,6 @@ const news:New[]=[
 
 restaurantSeed[0].news=news
 
-const finalSupervisor = supervisor; 
 
-export{finalSupervisor, studentSeed, restaurantSeed, productsSeed, news};
+export{studentSeed, restaurantSeed, productsSeed, news};
 
