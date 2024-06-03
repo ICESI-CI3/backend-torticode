@@ -29,6 +29,9 @@ UniLunch es una plataforma diseñada para facilitar el proceso de venta de almue
 
 Para utilizar UniLuch, los usuarios pueden acceder a través de sus credenciales asignadas por el sistema. Dependiendo de su rol (Restaurante, Estudiante o Moderador), tendrán acceso a diferentes funciones dentro de la plataforma.
 
+## **Despliegue - API REST**
+
+[Despliegue Backend UniLuch](https://uniluch-nestjs.onrender.com/api/auth/login)
 
 **Este README resume los aspectos más importantes de la plataforma UniLuch, proporcionando una visión general de sus características y alcance.**
 
