@@ -6,9 +6,10 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Restaurant } from 'src/roles/entities/restaurant.entity';
 import { UsersService } from 'src/users/users.service';
 import { UsersModule } from 'src/users/users.module';
+import { AuthModule } from '../auth/auth.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([New, Restaurant]),
+  imports: [TypeOrmModule.forFeature([New, Restaurant]),AuthModule,
   UsersModule],
   controllers: [NewsController],
   providers: [NewsService],
