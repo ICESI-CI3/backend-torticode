@@ -48,17 +48,20 @@ export class SalesService {
 
     const details = await Promise.all(
       saleDetails.map(async (detail) => {
-        const saleDetail = new SaleDetail();
         const product = await this.productRepository.findOne({ where: { id: detail.productId } });
 
         if (!product) {
           sale.status = Status.FAILED;
           throw new NotFoundException(`Product with id: ${detail.productId} not found.`);
         }
+
+        const saleDetail = new SaleDetail();
         saleDetail.product = product;
         saleDetail.quantity = detail.quantity;
         saleDetail.sale = sale;
+
         totalValue += saleDetail.subtotal;
+
         return saleDetail;
       }),
     );
