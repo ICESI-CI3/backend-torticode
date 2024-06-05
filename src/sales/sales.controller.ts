@@ -4,6 +4,7 @@ import { CreateSaleDto } from './dto/create-sale.dto';
 import { UpdateSaleDto } from './dto/update-sale.dto';
 import { Auth } from 'src/auth/decorators/auth.decorators';
 import { Role } from 'src/roles/enum/role.enum';
+import { ActiveUser } from 'src/common/decorators/active-user.decorators';
 
 @Controller('sales')
 export class SalesController {
@@ -11,8 +12,8 @@ export class SalesController {
 
   @Auth(Role.STUDENT)
   @Post()
-  create(@Body() createSaleDto: CreateSaleDto) {
-    return this.salesService.create(createSaleDto);
+  create(@ActiveUser() user: any , @Body() createSaleDto: CreateSaleDto) {
+    return this.salesService.create(user, createSaleDto);
   }
   
   @Get()

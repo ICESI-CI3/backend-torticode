@@ -70,15 +70,16 @@ describe('SalesController', () => {
 
       jest.spyOn(service, 'create').mockResolvedValue(result as any);
 
-      expect(await controller.create(createSaleDto)).toBe(result);
+      expect(await controller.create({}, createSaleDto)).toBe(result);
     });
 
     it('should throw BadRequestException if sale creation fails', async () => {
       const createSaleDto = { restaurantId: 1, studentId: 1, saleDetails: [{ productId: 1, quantity: 1 }] };
+      const user = {}; // Add a dummy user object
 
       jest.spyOn(service, 'create').mockRejectedValue(new BadRequestException());
 
-      await expect(controller.create(createSaleDto)).rejects.toThrow(BadRequestException);
+      await expect(controller.create(user, createSaleDto)).rejects.toThrow(BadRequestException);
     });
   });
 

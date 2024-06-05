@@ -4,8 +4,6 @@ import { Type } from 'class-transformer';
 
 export class ResponseSaleDto {
     id:number;
-    restaurantId: number;
-    studentId: number;
     saleDetails: CreateSaleDetailDto[];
     totalValue:number;
 }
