@@ -11,6 +11,7 @@ import { UpdateSaleDto } from './dto/update-sale.dto';
 import { Status } from './enum/status.enum';
 import { toSaleDTO } from './sales.utils';
 import { ResponseSaleDto } from './dto/response-sale.dto';
+import { ActiveUser } from 'src/common/decorators/active-user.decorators';
 
 @Injectable()
 export class SalesService {
@@ -27,10 +28,12 @@ export class SalesService {
     private productRepository: Repository<Product>,
   ) {}
 
-  async create(createSaleDto: CreateSaleDto): Promise<ResponseSaleDto> {
-    const { restaurantId, studentId, saleDetails } = createSaleDto;
-    const restaurant = await this.restaurantRepository.findOne({ where: { id: restaurantId } });
-    const student = await this.studentRepository.findOne({ where: { id: studentId } });
+  async create({email}: {email: string;}, createSaleDto: CreateSaleDto): Promise<ResponseSaleDto> {
+    const pro = await this.productRepository.findOne({ where: { id: createSaleDto.saleDetails[0].productId } });
+    const restaurant = pro.restaurant;
+    const student = await this.studentRepository.findOne({ where: { email } });
+    const {saleDetails } = createSaleDto;
+
 
     if (!restaurant) {
       throw new NotFoundException('Restaurant not found.');
@@ -49,7 +52,11 @@ export class SalesService {
     const details = await Promise.all(
       saleDetails.map(async (detail) => {
         const product = await this.productRepository.findOne({ where: { id: detail.productId } });
-
+        product.stock -= detail.quantity;
+        if (product.stock < 0) {
+          sale.status = Status.FAILED;
+          throw new BadRequestException(`Product with id: ${detail.productId} out of stock.`);
+        }
         if (!product) {
           sale.status = Status.FAILED;
           throw new NotFoundException(`Product with id: ${detail.productId} not found.`);

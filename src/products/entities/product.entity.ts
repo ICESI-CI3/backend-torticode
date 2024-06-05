@@ -18,7 +18,7 @@ export class Product {
     @Column()
     image: string;
 
-    @Column({ type: 'bigint', nullable: false })
+    @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP', onUpdate: 'CURRENT_TIMESTAMP'})
     createdAt: number;
 
     @DeleteDateColumn()

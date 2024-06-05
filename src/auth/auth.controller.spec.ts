@@ -5,6 +5,7 @@ import { JwtService } from '@nestjs/jwt';
 import { LoginDto } from './dto/login.dto';
 import { RegisterDto } from './dto/register.dto';
 import { BadRequestException, UnauthorizedException } from '@nestjs/common';
+import { Role } from 'src/roles/enum/role.enum';
 
 describe('AuthController', () => {
   let controller: AuthController;
@@ -43,7 +44,7 @@ describe('AuthController', () => {
   describe('login', () => {
     it('should login a user', async () => {
       const loginDto: LoginDto = { email: 'test@example.com', password: 'Password123' };
-      const result = { token: 'token', email: 'test@example.com' };
+      const result = { token: 'token', email: 'test@example.com', role: Role.RESTAURANT };
 
       jest.spyOn(service, 'login').mockResolvedValue(result);
 
